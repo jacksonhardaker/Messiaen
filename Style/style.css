@@ -165,7 +165,7 @@ nav {
         }
 
 .messiaenbackground {
-    background-image: url(/Images/messiaen.png);
+    background-image: url(../Images/messiaen.png);
     background-position: right top;
     background-repeat: no-repeat;
     background-color: transparent;
