@@ -1,20 +1,11 @@
 ﻿
-@import url(http://fonts.googleapis.com/css?family=Lora);
+@import url(http://fonts.googleapis.com/css?family=Lora|Roboto:100,300);
 * {-moz-user-select: -moz-none;
     -khtml-user-select: none;
     -webkit-user-select: none;
     -o-user-select: none;
     user-select: none;}
-body {
-    color: #000;
-    background-color: rgba(0,0,0,0.1);
-}
-h1 {
-    font-family: "Lora", Garamond, Serif;
-    font-size: 48px;
-    font-weight: normal;
-    color: #212136;
-}
+    
 
 
 /*!
@@ -33,15 +24,41 @@ body {
 }
 
 body {
-    font-family: "Source Sans Pro","Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: #000;
+    background-color: rgba(0,0,0,0.1);
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    font-weight: 100;
+}
+
+h1 {
+    font-family: "Lora", Garamond, Serif;
+    font-size: 48px;
+    font-weight: normal;
+    color: #212136;
 }
 
 p {
-    margin: 20px 0 10px;
+    margin: 20px 0 40px;
+    font-size: 140%;
+    font-weight: 100;
+}
+b {
+    font-weight: 300;
+}
+ul {
+    font-weight: 100;
 }
 
-a {
-    color: #432B39;
+a, a:visited {
+    color: #AC2017;
+}
+a:hover, a:active {
+    color: #fff;
+}
+
+input, button, select, textarea {
+    padding: 10px 5px;
+    font-size: 120%;
 }
 
 
