@@ -1,28 +1,20 @@
-/// <reference path="jquery-1.4.2.min.js" />
-
-/// <reference path="browserDetect.js" />
-
-/// <reference path="messiaen.audio.js" />
-
-
-
 var messiaen = {};
 
 messiaen.diagram = function () {
 
-	var methods = {};
+    var methods = {};
 
 
 
-	var _colors = { background: "dbcebb", heading: "212136", circle: "1E0F13", defaultText: "87767A", selectedText: "1E0F13", highlightedShadow: "212136", modeShape: "87767A", chordShape: "1E0F13" };
+    var _colors = { background: "dbcebb", heading: "212136", circle: "1E0F13", defaultText: "fff", selectedText: "1E0F13", highlightedText: "AC2017", modeShape: "fff", chordShape: "AC2017" };
 
 
 
-	var _pitches = ["C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "Bb", "B", "C"];
+    var _pitches = ["C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "Bb", "B", "C"];
 
 
 
-	var _pitchAngleRanges = [{ pitchIndex: 11, lower: -1 / 12, upper: 1 / 12, middle: 0 },
+    var _pitchAngleRanges = [{ pitchIndex: 11, lower: -1 / 12, upper: 1 / 12, middle: 0 },
 
 							 { pitchIndex: 10, lower: 1 / 12, upper: 3 / 12, middle: 2 / 12 },
 
@@ -44,145 +36,145 @@ messiaen.diagram = function () {
 
 							 { pitchIndex: 1, lower: 19 / 12, upper: 21 / 12, middle: 20 / 12 },
 
-							 { pitchIndex: 0, lower: 21 / 12, upper: 23 / 12, middle: 22 / 12}];
+							 { pitchIndex: 0, lower: 21 / 12, upper: 23 / 12, middle: 22 / 12 }];
 
 
 
-	var _modes = [{ name: "First mode / Whole-tone scale", construction: [2, 2, 2, 2, 2] },
+    var _modes = [{ name: "First mode / Whole-tone scale", construction: [2, 2, 2, 2, 2] },
 
-				  { name: "Second mode / Diminished scale", construction: [1, 2, 1, 2, 1, 2, 1] },
+        { name: "Second mode / Diminished scale", construction: [1, 2, 1, 2, 1, 2, 1] },
 
-				  { name: "Third mode", construction: [2, 1, 1, 2, 1, 1, 2, 1] },
+        { name: "Third mode", construction: [2, 1, 1, 2, 1, 1, 2, 1] },
 
-				  { name: "Fourth mode", construction: [1, 1, 3, 1, 1, 1, 3] },
+        { name: "Fourth mode", construction: [1, 1, 3, 1, 1, 1, 3] },
 
-				  { name: "Fifth mode", construction: [1, 4, 1, 1, 4] },
+        { name: "Fifth mode", construction: [1, 4, 1, 1, 4] },
 
-				  { name: "Sixth mode", construction: [2, 2, 1, 1, 2, 2, 1] },
+        { name: "Sixth mode", construction: [2, 2, 1, 1, 2, 2, 1] },
 
-				  { name: "Seventh mode", construction: [1, 1, 1, 2, 1, 1, 1, 1, 2]}];
+        { name: "Seventh mode", construction: [1, 1, 1, 2, 1, 1, 1, 1, 2] }];
 
 
 
-	var _canvas = null;
+    var _canvas = null;
 
-	var _context = null;
+    var _context = null;
 
 
+    /* Unused? */
+    var _center = null;
 
-	var _center = null;
 
 
+    var _currentTransformationMatrix = null;
 
-	var _currentTransformationMatrix = null;
 
 
+    var _pitchTransformationMatrix = null;
 
-	var _pitchTransformationMatrix = null;
+    var _lineTransformationMatrix = null;
 
-	var _lineTransformationMatrix = null;
 
 
+    var _pitchObjects = [];
 
-	var _pitchObjects = [];
+    var _highlightedPitches = [];
 
-	var _highlightedPitches = [];
+    var _selectedPitches = [];
 
-	var _selectedPitches = [];
 
 
+    var _currentKeyIndex = 11;
 
-	var _currentKeyIndex = 11;
+    var _currentModeIndex = 0;
 
-	var _currentModeIndex = 0;
 
 
+    var _rotation = 0;
 
-	var _rotation = 0;
 
 
+    var _modeListBoundingBoxes = [];
 
-	var _modeListBoundingBoxes = [];
+    var _modeListBoundingBoxMouseOverIndex = null;
 
-	var _modeListBoundingBoxMouseOverIndex = null;
 
 
+    var _diagramMouseDown = false;
 
-	var _diagramMouseDown = false;
+    var _previousMouseCoords = null;
 
-	var _previousMouseCoords = null;
 
 
+    var _requireRedraw = false;
 
-	var _requireRedraw = false;
 
 
+    var _previousTime = null;
 
-	var _previousTime = null;
+    var _pixelsPerMillisecond = 0;
 
-	var _pixelsPerMillisecond = 0;
+    var _timeOutId = null;
 
-	var _timeOutId = null;
 
 
+    methods.initialise = function () {
 
-	methods.initialise = function () {
+        BrowserDetect.init();
 
-		BrowserDetect.init();
+        messiaen.audio.initialise();
 
-		messiaen.audio.initialise();
 
 
+        _canvas = document.getElementById("messiaenDiagram");
 
-		_canvas = document.getElementById("messiaenDiagram");
+        _canvas.width = document.documentElement.clientHeight - 170;
 
-		_canvas.width = document.documentElement.clientHeight - 170;
+        _canvas.height = document.documentElement.clientHeight - 170;
 
-		_canvas.height = document.documentElement.clientHeight - 170;
+        _context = _canvas.getContext("2d");
 
-		_context = _canvas.getContext("2d");
 
 
+        var modeSelect = document.getElementById("modeSelect");
 
-		var modeSelect = document.getElementById("modeSelect");
+        modeSelect.selectedIndex = 0;
 
-		modeSelect.selectedIndex = 0;
+        modeSelect.onchange = function (e) {
 
-		modeSelect.onchange = function (e) {
+            var l = document.getElementById("modeSelect");
 
-			var l = document.getElementById("modeSelect");
+            _currentModeIndex = Number(l.children[l.selectedIndex].value);
 
-			_currentModeIndex = Number(l.children[l.selectedIndex].value);
+            _selectedPitches = [];
 
-			_selectedPitches = [];
+            _requireRedraw = true;
 
-			_requireRedraw = true;
+        };
 
-		};
 
 
+        var keySelect = document.getElementById("keySelect");
 
-		var keySelect = document.getElementById("keySelect");
+        keySelect.selectedIndex = 0;
 
-		keySelect.selectedIndex = 0;
+        keySelect.onchange = function (e) {
 
-		keySelect.onchange = function (e) {
+            var previousKeyIndex = _currentKeyIndex;
 
-			var previousKeyIndex = _currentKeyIndex;
+            var l = document.getElementById("keySelect");
 
-			var l = document.getElementById("keySelect");
+            _currentKeyIndex = Number(l.children[l.selectedIndex].value);
 
-			_currentKeyIndex = Number(l.children[l.selectedIndex].value);
+            _selectedPitches = [];
 
-			_selectedPitches = [];
+            __animateRotation(previousKeyIndex);
 
-			__animateRotation(previousKeyIndex);
+        };
 
-		};
 
 
-
-		if ('ontouchstart' in document.documentElement) {
+        if ('ontouchstart' in document.documentElement) {
 
 			/*document.getElementById("instructionsLink").addEventListener("touchstart", function () {
 
@@ -202,59 +194,59 @@ messiaen.diagram = function () {
 
 
 
-			document.getElementById("playMessiaenChordButton").addEventListener("touchstart", function (e) { __playChordClick(); return false; }, false);
+            document.getElementById("playMessiaenChordButton").addEventListener("touchstart", function (e) { __playChordClick(); return false; }, false);
 
-			document.getElementById("clearMessiaenChordButton").addEventListener("touchstart", function (e) { _selectedPitches = []; _requireRedraw = true; return false; }, false);
-
-
-
-			_canvas.addEventListener('touchstart', function (e) {
-
-				_previousTime = new Date();
-
-				_diagramMouseDown = true;
+            document.getElementById("clearMessiaenChordButton").addEventListener("touchstart", function (e) { _selectedPitches = []; _requireRedraw = true; return false; }, false);
 
 
 
-				if (_timeOutId !== null) {
+            _canvas.addEventListener('touchstart', function (e) {
 
-					window.clearTimeout(_timeOutId);
+                _previousTime = new Date();
 
-					_timeOutId = null;
-
-				}
-
-				__diagramClick(e);
+                _diagramMouseDown = true;
 
 
 
-				document.addEventListener('touchmove', __documentMouseMove, false);
+                if (_timeOutId !== null) {
 
-				document.addEventListener('touchend', function (e) {
+                    window.clearTimeout(_timeOutId);
 
-					_diagramMouseDown = false;
+                    _timeOutId = null;
 
-					_previousMouseCoords = null;
+                }
 
-					_canvas.removeEventListener('touchmove');
-
-					_canvas.removeEventListener('touchend');
-
-					_previousTime = null;
-
-					__stopDiagramDragRotate();
-
-				}, false);
+                __diagramClick(e);
 
 
 
-				return false;
+                document.addEventListener('touchmove', __documentMouseMove, false);
 
-			}, false);
+                document.addEventListener('touchend', function (e) {
 
-		}
+                    _diagramMouseDown = false;
 
-		else {
+                    _previousMouseCoords = null;
+
+                    _canvas.removeEventListener('touchmove');
+
+                    _canvas.removeEventListener('touchend');
+
+                    _previousTime = null;
+
+                    __stopDiagramDragRotate();
+
+                }, false);
+
+
+
+                return false;
+
+            }, false);
+
+        }
+
+        else {
 
 			/*document.getElementById("instructionsLink").onclick = function () {
 
@@ -274,959 +266,920 @@ messiaen.diagram = function () {
 
 
 
-			_canvas.onclick = __diagramClick;
+            _canvas.onclick = __diagramClick;
 
 
 
-			document.getElementById("playMessiaenChordButton").onclick = function () { __playChordClick(); };
+            document.getElementById("playMessiaenChordButton").onclick = function () { __playChordClick(); };
 
-			document.getElementById("clearMessiaenChordButton").onclick = function () { _selectedPitches = []; _requireRedraw = true; };
+            document.getElementById("clearMessiaenChordButton").onclick = function () { _selectedPitches = []; _requireRedraw = true; };
 
 
 
-			_canvas.onmousedown = function () {
+            _canvas.onmousedown = function () {
 
-				_previousTime = new Date();
+                _previousTime = new Date();
 
-				_diagramMouseDown = true;
+                _diagramMouseDown = true;
 
 
 
-				if (_timeOutId !== null) {
+                if (_timeOutId !== null) {
 
-					window.clearTimeout(_timeOutId);
+                    window.clearTimeout(_timeOutId);
 
-					_timeOutId = null;
+                    _timeOutId = null;
 
-				}
+                }
 
 
 
-				_canvas.style.cursor = "pointer";
+                _canvas.style.cursor = "pointer";
 
 
 
-				document.onmousemove = __documentMouseMove;
+                document.onmousemove = __documentMouseMove;
 
-				document.onmouseup = function () {
+                document.onmouseup = function () {
 
-					_canvas.style.cursor = "default";
+                    _canvas.style.cursor = "default";
 
-					document.documentElement.style.cursor = "default";
+                    document.documentElement.style.cursor = "default";
 
-					_diagramMouseDown = false;
+                    _diagramMouseDown = false;
 
-					_previousMouseCoords = null;
+                    _previousMouseCoords = null;
 
-					document.onmousemove = function () { };
+                    document.onmousemove = function () { };
 
-					document.onmouseup = function () { };
+                    document.onmouseup = function () { };
 
-					_previousTime = null;
+                    _previousTime = null;
 
-					__stopDiagramDragRotate();
+                    __stopDiagramDragRotate();
 
-				};
+                };
 
 
 
-				return false;
+                return false;
 
-			};
+            };
 
-		}
+        }
 
 
 
-		_requireRedraw = true;
+        _requireRedraw = true;
 
-		window.setInterval(function () { __drawScene(_rotation); }, 25);
+        window.setInterval(function () { __drawScene(_rotation); }, 25);
 
-	};
+    };
 
 
 
-	var __stopDiagramDragRotate = function () {
+    var __stopDiagramDragRotate = function () {
 
-		if (_pixelsPerMillisecond > 1 || _pixelsPerMillisecond < -1) {
+        if (_pixelsPerMillisecond > 1 || _pixelsPerMillisecond < -1) {
 
-			_timeOutId = setTimeout(function () {
+            _timeOutId = setTimeout(function () {
 
 
 
-				_rotation -= (1 / 1024) * _pixelsPerMillisecond;
+                _rotation -= (1 / 1024) * _pixelsPerMillisecond;
 
-				if (_rotation < 0) {
+                if (_rotation < 0) {
 
-					_rotation = 2 + _rotation;
+                    _rotation = 2 + _rotation;
 
-				}
+                }
 
-				else if (_rotation >= 2) {
+                else if (_rotation >= 2) {
 
-					_rotation = _rotation - 2;
+                    _rotation = _rotation - 2;
 
-				}
+                }
 
-				_requireRedraw = true;
+                _requireRedraw = true;
 
 
 
-				_pixelsPerMillisecond *= 0.992;
+                _pixelsPerMillisecond *= 0.992;
 
-				__stopDiagramDragRotate();
+                __stopDiagramDragRotate();
 
-			}, 1);
+            }, 1);
 
-		}
+        }
 
-		else {
+        else {
 
-			_timeOutId = null;
+            _timeOutId = null;
 
-			_pixelsPerMillisecond = 0;
+            _pixelsPerMillisecond = 0;
 
-		}
+        }
 
-	};
+    };
 
 
 
-	methods.getPitchObjects = function () {
+    methods.getPitchObjects = function () {
 
-		return _pitchObjects;
+        return _pitchObjects;
 
-	};
+    };
 
 
 
-	var __clearScene = function () {
+    var __clearScene = function () {
 
-		_canvas.width = _canvas.width;
+        _canvas.width = _canvas.width;
 
-		_highlightedPitches = [];
+        _highlightedPitches = [];
 
-		_pitchObjects = [];
+        _pitchObjects = [];
 
-		_modeListBoundingBoxes = [];
+        _modeListBoundingBoxes = [];
 
-	};
+    };
 
 
 
-	var __createMatrixIdentity = function () { return [[1, 0, 0], [0, 1, 0], [0, 0, 1]]; };
+    var __createMatrixIdentity = function () { return [[1, 0, 0], [0, 1, 0], [0, 0, 1]]; };
 
 
 
-	var __drawScene = function (rotation) {
+    var __drawScene = function (rotation) {
 
-		if (_requireRedraw) {
+        if (_requireRedraw) {
 
-			_requireRedraw = false;
+            _requireRedraw = false;
 
-			__clearScene();
+            __clearScene();
 
 
 
-			var _center = { x: _canvas.width / 2, y: _canvas.height / 2 };
+            var _center = { x: _canvas.width / 2, y: _canvas.height / 2 };
 
-			var radius = (_canvas.height / 2) - 50;
+            var radius = (_canvas.height / 2) - 50;
 
 
 
-			// Pitches
+            // Pitches
 
-			__drawPitches(_rotation, _center, radius);
+            __drawPitches(_rotation, _center, radius);
 
 
 
-			// Reset
+            // Reset
 
-			_context.setTransform(1, 0, 0, 1, 0, 0);
+            _context.setTransform(1, 0, 0, 1, 0, 0);
 
 
 
-			// Connecting highlighted lines
+            // Connecting highlighted lines
 
-			_context.beginPath();
+            _context.beginPath();
 
-			_context.shadowColor = "rgba(0,0,0,0)";
 
-			_context.shadowOffsetX = 0;
+            if (_highlightedPitches.length > 1) {
 
-			_context.shadowOffsetY = 0;
+                _context.strokeStyle = "#" + _colors.modeShape;
 
-			_context.shadowBlur = 0;
+                _context.lineWidth = 4;
 
 
 
-			if (_highlightedPitches.length > 1) {
+                _context.moveTo(_pitchObjects[_highlightedPitches[0]].lineTransformationMatrix[2][0], _pitchObjects[_highlightedPitches[0]].lineTransformationMatrix[2][1]);
 
-				_context.strokeStyle = "#" + _colors.modeShape;
 
-				_context.lineWidth = 4;
 
+                var j = _highlightedPitches.length - 1;
 
+                while (j >= 0) {
 
-				_context.moveTo(_pitchObjects[_highlightedPitches[0]].lineTransformationMatrix[2][0], _pitchObjects[_highlightedPitches[0]].lineTransformationMatrix[2][1]);
+                    _context.lineTo(_pitchObjects[_highlightedPitches[j]].lineTransformationMatrix[2][0], _pitchObjects[_highlightedPitches[j]].lineTransformationMatrix[2][1]);
 
+                    j--;
 
+                }
 
-				var j = _highlightedPitches.length - 1;
 
-				while (j >= 0) {
 
-					_context.lineTo(_pitchObjects[_highlightedPitches[j]].lineTransformationMatrix[2][0], _pitchObjects[_highlightedPitches[j]].lineTransformationMatrix[2][1]);
+                _context.stroke();
 
-					j--;
+            }
 
-				}
 
 
+            _context.closePath();
 
-				_context.stroke();
 
-			}
 
+            // Reset
 
+            _context.setTransform(1, 0, 0, 1, 0, 0);
 
-			_context.closePath();
 
 
+            // Circle
 
-			// Reset
+            _context.beginPath();
 
-			_context.setTransform(1, 0, 0, 1, 0, 0);
+            _context.strokeStyle = "#" + _colors.circle;
 
+            _context.lineWidth = 5;
 
 
-			// Circle
 
-			_context.beginPath();
+            _context.arc(_center.x, _center.y, radius, 0, Math.PI * 2, false);
 
-			_context.strokeStyle = "#" + _colors.circle;
+            _context.stroke();
 
-			_context.lineWidth = 5;
+            _context.closePath();
 
 
 
-			_context.arc(_center.x, _center.y, radius, 0, Math.PI * 2, false);
+            // Reset
 
-			_context.stroke();
+            _context.setTransform(1, 0, 0, 1, 0, 0);
 
-			_context.closePath();
 
 
+            // Connecting selected lines
 
-			// Reset
+            _context.beginPath();
 
-			_context.setTransform(1, 0, 0, 1, 0, 0);
 
+            if (_selectedPitches.length > 1) {
 
+                _context.strokeStyle = "#" + _colors.chordShape;
 
-			// Connecting selected lines
+                _context.lineWidth = 2;
 
-			_context.beginPath();
 
-			_context.shadowColor = "rgba(0,0,0,0)";
 
-			_context.shadowOffsetX = 0;
+                _context.moveTo(_pitchObjects[_selectedPitches[0]].lineTransformationMatrix[2][0], _pitchObjects[_selectedPitches[0]].lineTransformationMatrix[2][1]);
 
-			_context.shadowOffsetY = 0;
 
-			_context.shadowBlur = 0;
 
+                var j = 1;
 
+                while (j < _selectedPitches.length) {
 
-			if (_selectedPitches.length > 1) {
+                    _context.lineTo(_pitchObjects[_selectedPitches[j]].lineTransformationMatrix[2][0], _pitchObjects[_selectedPitches[j]].lineTransformationMatrix[2][1]);
 
-				_context.strokeStyle = "#" + _colors.chordShape;
+                    j++;
 
-				_context.lineWidth = 2;
+                }
 
 
 
-				_context.moveTo(_pitchObjects[_selectedPitches[0]].lineTransformationMatrix[2][0], _pitchObjects[_selectedPitches[0]].lineTransformationMatrix[2][1]);
+                _context.stroke();
 
+            }
 
 
-				var j = 1;
 
-				while (j < _selectedPitches.length) {
+            _context.closePath();
 
-					_context.lineTo(_pitchObjects[_selectedPitches[j]].lineTransformationMatrix[2][0], _pitchObjects[_selectedPitches[j]].lineTransformationMatrix[2][1]);
 
-					j++;
 
-				}
+            _requireRedraw = false;
 
+        }
 
+    };
 
-				_context.stroke();
 
-			}
 
+    var __drawPitches = function (rotation, center, radius) {
 
+        _context.beginPath();
 
-			_context.closePath();
 
 
+        _context.font = "300 24px Roboto, Arial, Helvetica, sans-serif";
 
-			_requireRedraw = false;
+        _context.fillStyle = "#" + _colors.defaultText;
 
-		}
+        _context.textAlign = "center";
 
-	};
 
 
+        var mode = _modes[_currentModeIndex];
 
-	var __drawPitches = function (rotation, center, radius) {
+        var scaleDegree = _currentKeyIndex;
 
-		_context.beginPath();
+        _highlightedPitches.push(scaleDegree);
 
+        for (var i = 0, length = mode.construction.length; i < length; i++) {
 
+            scaleDegree = scaleDegree + mode.construction[i];
 
-		_context.shadowColor = 'rgba(0,0,0,0)';
+            scaleDegree = (scaleDegree >= 12) ? scaleDegree - 12 : scaleDegree;
 
+            _highlightedPitches.push(scaleDegree);
 
+        }
 
-		_context.font = "normal 24px Tahoma, Arial, Sans-Serif";
 
-		_context.fillStyle = "#" + _colors.defaultText;
 
-		_context.textAlign = "center";
+        for (var i = 0, length = _pitches.length; i < length, pitch = _pitches[i]; i++) {
 
 
 
-		var mode = _modes[_currentModeIndex];
+            if (_highlightedPitches.indexOf(i) !== -1) {
 
-		var scaleDegree = _currentKeyIndex;
+                _context.fillStyle = "#" + _colors.selectedText;
 
-		_highlightedPitches.push(scaleDegree);
+            }
 
-		for (var i = 0, length = mode.construction.length; i < length; i++) {
+            else {
 
-			scaleDegree = scaleDegree + mode.construction[i];
+                _context.fillStyle = "#" + _colors.defaultText;
 
-			scaleDegree = (scaleDegree >= 12) ? scaleDegree - 12 : scaleDegree;
+            }
 
-			_highlightedPitches.push(scaleDegree);
 
-		}
 
+            if (_selectedPitches.indexOf(i) !== -1) {
 
+                _context.fillStyle = "#" + _colors.highlightedText;
+            }
 
-		for (var i = 0, length = _pitches.length; i < length, pitch = _pitches[i]; i++) {
+            else {
 
+            }
 
 
-			if (_highlightedPitches.indexOf(i) !== -1) {
 
-				_context.fillStyle = "#" + _colors.selectedText;
+            var x = Math.round(Math.cos((i + 10) * Math.PI / 6) * radius);
 
-			}
+            var y = Math.round(Math.sin((i + 10) * Math.PI / 6) * radius);
 
-			else {
 
-				_context.shadowColor = 'rgba(0,0,0,0)';
 
-				_context.fillStyle = "#" + _colors.defaultText;
+            var transformationMatrix = null;
 
-			}
 
 
+            // Calculate matrix for pitch labels
 
-			if (_selectedPitches.indexOf(i) !== -1) {
+            __setTransform(1, 0, 0, 1, center.x, center.y);
 
-				_context.shadowColor = "#" + _colors.highlightedShadow;
+            __scale(1.06, 1.06);
 
-				_context.shadowOffsetX = 0;
+            __rotate(rotation * Math.PI);
 
-				_context.shadowOffsetY = 0;
+            __translate(x, y);
 
-				_context.shadowBlur = 10;
+            __rotate((i + 1) * Math.PI / 6);
 
-			}
 
-			else {
 
-				_context.shadowColor = 'rgba(0,0,0,0)';
+            if (BrowserDetect.browser !== "Safari") {
 
-				_context.shadowOffsetX = 0;
+                _context.fillText(pitch, 0, 0);
 
-				_context.shadowOffsetY = 0;
+            }
 
-				_context.shadowBlur = 0;
+            else {
 
-			}
+                _context.strokeText(pitch, 0, 0);
 
+            }
 
+            _pitchTransformationMatrix = _currentTransformationMatrix;
 
-			var x = Math.round(Math.cos((i + 10) * Math.PI / 6) * radius);
 
-			var y = Math.round(Math.sin((i + 10) * Math.PI / 6) * radius);
 
+            // Calculate matrix for connecting lines
 
+            __setTransform(1, 0, 0, 1, center.x, center.y);
 
-			var transformationMatrix = null;
+            __scale(0.973, 0.973);
 
+            __rotate(rotation * Math.PI);
 
+            __translate(x, y);
 
-			// Calculate matrix for pitch labels
+            __rotate((i + 1) * Math.PI / 6);
 
-			__setTransform(1, 0, 0, 1, center.x, center.y);
+            _lineTransformationMatrix = _currentTransformationMatrix;
 
-			__scale(1.06, 1.06);
 
-			__rotate(rotation * Math.PI);
 
-			__translate(x, y);
+            _pitchObjects.push({ pitchIndex: i, pitchTransformationMatrix: _pitchTransformationMatrix, lineTransformationMatrix: _lineTransformationMatrix });
 
-			__rotate((i + 1) * Math.PI / 6);
+        }
 
+        _context.closePath();
 
+    };
 
-			if (BrowserDetect.browser !== "Safari") {
 
-				_context.fillText(pitch, 0, 0);
 
-			}
+    methods.getPitches = function () {
 
-			else {
+        return _pitchObjects;
 
-				_context.strokeText(pitch, 0, 0);
+    };
 
-			}
 
-			_pitchTransformationMatrix = _currentTransformationMatrix;
 
+    var __setTransform = function (m11, m21, m12, m22, dx, dy) {
 
+        _context.setTransform(m11, m21, m12, m22, dx, dy);
 
-			// Calculate matrix for connecting lines
 
-			__setTransform(1, 0, 0, 1, center.x, center.y);
 
-			__scale(0.973, 0.973);
+        _currentTransformationMatrix = [[m11, m12, 0],
 
-			__rotate(rotation * Math.PI);
+            [m21, m22, 0],
 
-			__translate(x, y);
+            [dx, dy, 1]];
 
-			__rotate((i + 1) * Math.PI / 6);
+    };
 
-			_lineTransformationMatrix = _currentTransformationMatrix;
 
 
+    var __scale = function (aX, aY) {
 
-			_pitchObjects.push({ pitchIndex: i, pitchTransformationMatrix: _pitchTransformationMatrix, lineTransformationMatrix: _lineTransformationMatrix });
+        _context.scale(aX, aY);
 
-		}
 
-		_context.closePath();
 
-	};
+        var m = [[aX, 0, 0],
 
+            [0, aY, 0],
 
+            [0, 0, 1]];
 
-	methods.getPitches = function () {
 
-		return _pitchObjects;
 
-	};
+        _currentTransformationMatrix = __matrixMultiply(m, _currentTransformationMatrix);
 
+    };
 
 
-	var __setTransform = function (m11, m21, m12, m22, dx, dy) {
 
-		_context.setTransform(m11, m21, m12, m22, dx, dy);
+    var __rotate = function (angle) {
 
+        _context.rotate(angle);
 
 
-		_currentTransformationMatrix = [[m11, m12, 0],
 
-										[m21, m22, 0],
+        var m = [[Math.cos(angle), Math.sin(angle), 0],
 
-										[dx, dy, 1]];
+            [-Math.sin(angle), Math.cos(angle), 0],
 
-	};
+            [0, 0, 1]];
 
 
 
-	var __scale = function (aX, aY) {
+        _currentTransformationMatrix = __matrixMultiply(m, _currentTransformationMatrix);
 
-		_context.scale(aX, aY);
+    };
 
 
 
-		var m = [[aX, 0, 0],
+    var __translate = function (x, y) {
 
-				  [0, aY, 0],
+        _context.translate(x, y);
 
-				  [0, 0, 1]];
 
 
+        var m = [[1, 0, 0],
 
-		_currentTransformationMatrix = __matrixMultiply(m, _currentTransformationMatrix);
+            [0, 1, 0],
 
-	};
+            [x, y, 1]];
 
 
 
-	var __rotate = function (angle) {
+        _currentTransformationMatrix = __matrixMultiply(m, _currentTransformationMatrix);
 
-		_context.rotate(angle);
+    };
 
 
 
-		var m = [[Math.cos(angle), Math.sin(angle), 0],
+    var __getMouseCoords = function (e, relativeToCanvas) {
 
-				  [-Math.sin(angle), Math.cos(angle), 0],
+        var x;
 
-				  [0, 0, 1]];
+        var y;
 
+        if (e.touches !== undefined) {
 
-
-		_currentTransformationMatrix = __matrixMultiply(m, _currentTransformationMatrix);
-
-	};
-
-
-
-	var __translate = function (x, y) {
-
-		_context.translate(x, y);
-
-
-
-		var m = [[1, 0, 0],
-
-				 [0, 1, 0],
-
-				 [x, y, 1]];
-
-
-
-		_currentTransformationMatrix = __matrixMultiply(m, _currentTransformationMatrix);
-
-	};
-
-
-
-	var __getMouseCoords = function (e, relativeToCanvas) {
-
-		var x;
-
-		var y;
-
-		if (e.touches !== undefined) {
-
-			x = e.touches[0].pageX + document.body.scrollLeft +
+            x = e.touches[0].pageX + document.body.scrollLeft +
 
             document.documentElement.scrollLeft;
 
-			y = e.touches[0].pageY + document.body.scrollTop +
+            y = e.touches[0].pageY + document.body.scrollTop +
 
             document.documentElement.scrollTop;
 
-		}
+        }
 
-		else {
+        else {
 
-			if (e.pageX != undefined && e.pageY != undefined) {
+            if (e.pageX != undefined && e.pageY != undefined) {
 
-				x = e.pageX;
+                x = e.pageX;
 
-				y = e.pageY;
+                y = e.pageY;
 
-			}
+            }
 
-			else {
+            else {
 
-				x = e.clientX + document.body.scrollLeft +
+                x = e.clientX + document.body.scrollLeft +
 
-            document.documentElement.scrollLeft;
+                document.documentElement.scrollLeft;
 
-				y = e.clientY + document.body.scrollTop +
+                y = e.clientY + document.body.scrollTop +
 
-            document.documentElement.scrollTop;
+                document.documentElement.scrollTop;
 
-			}
+            }
 
-		}
+        }
 
 
 
-		if (relativeToCanvas) {
+        if (relativeToCanvas) {
 
-			x -= _canvas.offsetLeft;
+            x -= _canvas.offsetLeft;
 
-			y -= _canvas.offsetTop;
+            y -= _canvas.offsetTop;
 
-		}
+        }
 
 
 
-		return { x: x, y: y };
+        return { x: x, y: y };
 
-	};
+    };
 
 
 
-	var __documentMouseMove = function (e) {
+    var __documentMouseMove = function (e) {
 
-		if (e.touches !== undefined) {
+        if (e.touches !== undefined) {
 
-			if (e.touches.length === 1) {
+            if (e.touches.length === 1) {
 
-				e.preventDefault();
+                e.preventDefault();
 
-			}
+            }
 
-		}
+        }
 
-		else {
+        else {
 
-			e.preventDefault();
+            e.preventDefault();
 
-		}
+        }
 
 
 
-		if (_diagramMouseDown) {
+        if (_diagramMouseDown) {
 
-			document.documentElement.style.cursor = "pointer";
+            document.documentElement.style.cursor = "pointer";
 
-			var coords = __getMouseCoords(e, false);
+            var coords = __getMouseCoords(e, false);
 
 
 
-			if (_previousMouseCoords === null) {
+            if (_previousMouseCoords === null) {
 
-				_previousMouseCoords = coords;
+                _previousMouseCoords = coords;
 
-			}
+            }
 
 
 
-			var dx = _previousMouseCoords.x - coords.x;
+            var dx = _previousMouseCoords.x - coords.x;
 
-			var dy = _previousMouseCoords.y - coords.y;
+            var dy = _previousMouseCoords.y - coords.y;
 
 
 
-			var midPointY = _canvas.offsetTop + (_canvas.height / 2);
+            var midPointY = _canvas.offsetTop + (_canvas.height / 2);
 
-			var midPointX = _canvas.offsetLeft + (_canvas.width / 2);
+            var midPointX = _canvas.offsetLeft + (_canvas.width / 2);
 
 
 
-			if (coords.y > midPointY) {
+            if (coords.y > midPointY) {
 
-				dx *= -1;
+                dx *= -1;
 
-			}
+            }
 
-			if (coords.x < midPointX) {
+            if (coords.x < midPointX) {
 
-				dy *= -1;
+                dy *= -1;
 
-			}
+            }
 
 
 
-			var change = (Math.abs(dx) > Math.abs(dy)) ? dx : dy;
+            var change = (Math.abs(dx) > Math.abs(dy)) ? dx : dy;
 
 
 
-			_pixelsPerMillisecond = change / ((new Date() - _previousTime));
+            _pixelsPerMillisecond = change / ((new Date() - _previousTime));
 
 
 
-			_rotation -= (1 / 1024) * change;
+            _rotation -= (1 / 1024) * change;
 
-			if (_rotation < 0) {
+            if (_rotation < 0) {
 
-				_rotation = 2 + _rotation;
+                _rotation = 2 + _rotation;
 
-			}
+            }
 
-			else if (_rotation >= 2) {
+            else if (_rotation >= 2) {
 
-				_rotation = _rotation - 2;
+                _rotation = _rotation - 2;
 
-			}
+            }
 
 
 
-			_previousMouseCoords = coords;
+            _previousMouseCoords = coords;
 
 
 
-			_requireRedraw = true;
+            _requireRedraw = true;
 
-			__drawScene(_rotation);
+            __drawScene(_rotation);
 
 
 
-			_previousTime = new Date();
+            _previousTime = new Date();
 
-		}
+        }
 
-	};
+    };
 
 
 
-	var __diagramMouseMove = function (e) {
+    var __diagramMouseMove = function (e) {
 
-		if (!_diagramMouseDown) {
+        if (!_diagramMouseDown) {
 
-			var coords = __getMouseCoords(e, true);
+            var coords = __getMouseCoords(e, true);
 
-		}
+        }
 
-	};
+    };
 
 
 
-	var __diagramClick = function (e) {
+    var __diagramClick = function (e) {
 
-		if (_timeOutId === null) {
+        if (_timeOutId === null) {
 
-			var coords = __getMouseCoords(e, true);
+            var coords = __getMouseCoords(e, true);
 
 
 
-			for (var i = 0, length = _pitchObjects.length; i < length, pitchObject = _pitchObjects[i]; i++) {
+            for (var i = 0, length = _pitchObjects.length; i < length, pitchObject = _pitchObjects[i]; i++) {
 
-				if (coords.x <= pitchObject.pitchTransformationMatrix[2][0] + 30 && coords.x >= pitchObject.pitchTransformationMatrix[2][0] - 30
+                if (coords.x <= pitchObject.pitchTransformationMatrix[2][0] + 30 && coords.x >= pitchObject.pitchTransformationMatrix[2][0] - 30
 
-				&& coords.y <= pitchObject.pitchTransformationMatrix[2][1] + 30 && coords.y >= pitchObject.pitchTransformationMatrix[2][1] - 30) {
+                    && coords.y <= pitchObject.pitchTransformationMatrix[2][1] + 30 && coords.y >= pitchObject.pitchTransformationMatrix[2][1] - 30) {
 
 
 
-					if (_highlightedPitches.indexOf(pitchObject.pitchIndex) !== -1 && _selectedPitches.indexOf(pitchObject.pitchIndex) === -1) {
+                    if (_highlightedPitches.indexOf(pitchObject.pitchIndex) !== -1 && _selectedPitches.indexOf(pitchObject.pitchIndex) === -1) {
 
 
 
-						_selectedPitches.push(pitchObject.pitchIndex);
+                        _selectedPitches.push(pitchObject.pitchIndex);
 
-						_requireRedraw = true;
+                        _requireRedraw = true;
 
 
 
-						messiaen.audio.loadPitch(_pitches[pitchObject.pitchIndex]);
+                        messiaen.audio.loadPitch(_pitches[pitchObject.pitchIndex]);
 
-					}
+                    }
 
-					else if (_selectedPitches.indexOf(pitchObject.pitchIndex) !== -1) {
+                    else if (_selectedPitches.indexOf(pitchObject.pitchIndex) !== -1) {
 
-						_selectedPitches.splice(_selectedPitches.indexOf(pitchObject.pitchIndex), 1);
+                        _selectedPitches.splice(_selectedPitches.indexOf(pitchObject.pitchIndex), 1);
 
-						_requireRedraw = true;
+                        _requireRedraw = true;
 
-					}
+                    }
 
-				}
+                }
 
-			}
+            }
 
-		}
+        }
 
-	};
+    };
 
 
 
-	var __diagramKeyPress = function (e) {
+    var __diagramKeyPress = function (e) {
 
-		var e = e || window.event;
+        var e = e || window.event;
 
-		var keyCode = e.keyCode || e.which;
+        var keyCode = e.keyCode || e.which;
 
 
 
-		switch (keyCode) {
+        switch (keyCode) {
 
-			case 37:
+            case 37:
 
-				_rotation -= 1 / 128;
+                _rotation -= 1 / 128;
 
-				if (_rotation < 0) {
+                if (_rotation < 0) {
 
-					_rotation = 2 + _rotation;
+                    _rotation = 2 + _rotation;
 
-				}
+                }
 
-				_requireRedraw = true;
+                _requireRedraw = true;
 
-				break;
+                break;
 
-			case 40:
+            case 40:
 
-				_selectedPitches = [];
+                _selectedPitches = [];
 
 
 
-				_currentModeIndex = (_currentModeIndex < 6) ? _currentModeIndex + 1 : 0;
+                _currentModeIndex = (_currentModeIndex < 6) ? _currentModeIndex + 1 : 0;
 
-				_requireRedraw = true;
+                _requireRedraw = true;
 
-				break;
+                break;
 
-			case 39:
+            case 39:
 
-				_rotation += 1 / 128;
+                _rotation += 1 / 128;
 
 
 
-				if (_rotation >= 2) {
+                if (_rotation >= 2) {
 
-					_rotation = _rotation - 2;
+                    _rotation = _rotation - 2;
 
-				}
+                }
 
-				_requireRedraw = true;
+                _requireRedraw = true;
 
-				break;
+                break;
 
-			case 38:
+            case 38:
 
-				_selectedPitches = [];
+                _selectedPitches = [];
 
 
 
-				_currentModeIndex = (_currentModeIndex > 0) ? _currentModeIndex - 1 : 6;
+                _currentModeIndex = (_currentModeIndex > 0) ? _currentModeIndex - 1 : 6;
 
-				_requireRedraw = true;
+                _requireRedraw = true;
 
-				break;
+                break;
 
-		}
+        }
 
-	};
+    };
 
 
 
-	var __animateRotation = function (previousKeyIndex) {
+    var __animateRotation = function (previousKeyIndex) {
 
-		var index = previousKeyIndex;
+        var index = previousKeyIndex;
 
-		var spanCount = 0;
+        var spanCount = 0;
 
-		while (index != _currentKeyIndex) {
+        while (index != _currentKeyIndex) {
 
-			spanCount++;
+            spanCount++;
 
-			index++;
+            index++;
 
-			if (index === 12) {
+            if (index === 12) {
 
-				index = 0;
+                index = 0;
 
-			}
+            }
 
-		}
+        }
 
 
 
-		for (var i = 0, length = _pitchAngleRanges.length; i < length, pitchAngle = _pitchAngleRanges[i]; i++) {
+        for (var i = 0, length = _pitchAngleRanges.length; i < length, pitchAngle = _pitchAngleRanges[i]; i++) {
 
-			if (pitchAngle.pitchIndex === _currentKeyIndex) {
+            if (pitchAngle.pitchIndex === _currentKeyIndex) {
 
-				if (_rotation < pitchAngle.middle - 1 / 64 || _rotation > pitchAngle.middle + 1 / 64) {
+                if (_rotation < pitchAngle.middle - 1 / 64 || _rotation > pitchAngle.middle + 1 / 64) {
 
-					if (spanCount <= 6) {
+                    if (spanCount <= 6) {
 
-						_rotation -= 1 / 64;
+                        _rotation -= 1 / 64;
 
-						if (_rotation < 0) {
+                        if (_rotation < 0) {
 
-							_rotation = 2 + _rotation;
+                            _rotation = 2 + _rotation;
 
-						}
+                        }
 
-					}
+                    }
 
-					else {
+                    else {
 
-						_rotation += 1 / 64;
+                        _rotation += 1 / 64;
 
-						if (_rotation >= 2) {
+                        if (_rotation >= 2) {
 
-							_rotation = _rotation - 2;
+                            _rotation = _rotation - 2;
 
-						}
+                        }
 
-					}
+                    }
 
-					_requireRedraw = true;
+                    _requireRedraw = true;
 
 
 
-					setTimeout(function () { __animateRotation(previousKeyIndex); }, 1);
+                    setTimeout(function () { __animateRotation(previousKeyIndex); }, 1);
 
-				}
+                }
 
-				break;
+                break;
 
-			}
+            }
 
-		}
+        }
 
-	};
+    };
 
 
 
-	var __playChordClick = function () {
+    var __playChordClick = function () {
 
-		var chord = [];
+        var chord = [];
 
-		for (var k = 0, length = _selectedPitches.length; k < length; k++) {
+        for (var k = 0, length = _selectedPitches.length; k < length; k++) {
 
-			chord.push(_pitches[_selectedPitches[k]]);
+            chord.push(_pitches[_selectedPitches[k]]);
 
-		}
+        }
 
-		messiaen.audio.playChord(chord);
+        messiaen.audio.playChord(chord);
 
-	};
+    };
 
 
 
-	var __matrixMultiply = function (m1, m2) {
+    var __matrixMultiply = function (m1, m2) {
 
-		var result = __createMatrixIdentity();
+        var result = __createMatrixIdentity();
 
 
 
-		for (var x = 0; x < 3; x++) {
+        for (var x = 0; x < 3; x++) {
 
-			for (var y = 0; y < 3; y++) {
+            for (var y = 0; y < 3; y++) {
 
-				var sum = 0;
+                var sum = 0;
 
 
 
-				for (var z = 0; z < 3; z++) {
+                for (var z = 0; z < 3; z++) {
 
-					sum += m1[x][z] * m2[z][y];
+                    sum += m1[x][z] * m2[z][y];
 
-				}
+                }
 
 
 
-				result[x][y] = sum;
+                result[x][y] = sum;
 
-			}
+            }
 
-		}
+        }
 
-		return result;
+        return result;
 
-	};
+    };
 
 
 
-	return methods;
+    return methods;
 
 } ();
 
