@@ -1,3 +1,4 @@
+var messiaen = (messiaen) ? messiaen : {};
 messiaen.audio = function ($) {
 
     var methods = {};

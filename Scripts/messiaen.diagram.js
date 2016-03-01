@@ -1,4 +1,4 @@
-var messiaen = {};
+var messiaen = (messiaen) ? messiaen : {};
 
 messiaen.diagram = function () {
 
