@@ -61,11 +61,6 @@ messiaen.diagram = function () {
     var _context = null;
 
 
-    /* Unused? */
-    var _center = null;
-
-
-
     var _currentTransformationMatrix = null;
 
 
@@ -95,9 +90,6 @@ messiaen.diagram = function () {
 
 
     var _modeListBoundingBoxes = [];
-
-    var _modeListBoundingBoxMouseOverIndex = null;
-
 
 
     var _diagramMouseDown = false;
@@ -176,27 +168,11 @@ messiaen.diagram = function () {
 
         if ('ontouchstart' in document.documentElement) {
 
-			/*document.getElementById("instructionsLink").addEventListener("touchstart", function () {
-
-				if (document.getElementById("instructionsContent").style.display === "block") {
-
-					document.getElementById("instructionsContent").style.display = "none";
-
-				}
-
-				else {
-
-					document.getElementById("instructionsContent").style.display = "block";
-
-				}
-
-			}, false);*/
-
-
-
             document.getElementById("playMessiaenChordButton").addEventListener("touchstart", function (e) { __playChordClick(); return false; }, false);
 
             document.getElementById("clearMessiaenChordButton").addEventListener("touchstart", function (e) { _selectedPitches = []; _requireRedraw = true; return false; }, false);
+            
+            document.getElementById("downloadMessiaenDiagramButton").addEventListener("touchstart", function () { this.href = _canvas.toDataURL(); this.download = "messiaen-diagram-" + new Date().getTime();}, false);
 
 
 
@@ -273,6 +249,8 @@ messiaen.diagram = function () {
             document.getElementById("playMessiaenChordButton").onclick = function () { __playChordClick(); };
 
             document.getElementById("clearMessiaenChordButton").onclick = function () { _selectedPitches = []; _requireRedraw = true; };
+            
+            document.getElementById("downloadMessiaenDiagramButton").onclick = function () { this.href = _canvas.toDataURL(); this.download = "messiaen-diagram-" + new Date().getTime();}
 
 
 
