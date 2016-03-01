@@ -149,9 +149,9 @@ messiaen.audio = function ($) {
 
             var now = new Date();
 
-            if (_audioChannels[i].channel < now.getTime()) {			// is this channel finished?
+            if (_audioChannels[i].finished < now.getTime()) {			// is this channel finished?
 
-                _audioChannels[i].channel = now.getTime() + audio.duration * 1000;
+                _audioChannels[i].finished = now.getTime() + audio.duration * 1000;
 
                 _audioChannels[i].channel.src = audio.src;
 
