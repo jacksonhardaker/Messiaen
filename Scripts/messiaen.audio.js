@@ -49,10 +49,7 @@ messiaen.audio = function ($) {
 
             var audioObj = [];
 
-            //audioObj['channel'] = new Audio();
             audioObj.channel = new Audio();
-
-            //audioObj['finished'] = -1;
             audioObj.finished = -1;
 
 
