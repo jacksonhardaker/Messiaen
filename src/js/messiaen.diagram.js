@@ -85,7 +85,7 @@ messiaen.diagram = function () {
 
         if ('ontouchstart' in document.documentElement) {
 
-            document.getElementById("playMessiaenChordButton").addEventListener("touchstart", function (e) { __playChordClick(); return false; }, false);
+            document.getElementById("playMessiaenChordButton").addEventListener("touchstart", function (e) { messiaenAudio.playChord(_selectedPitches); return false; }, false);
             document.getElementById("clearMessiaenChordButton").addEventListener("touchstart", function (e) { _selectedPitches = []; _requireRedraw = true; return false; }, false);
             document.getElementById("downloadMessiaenDiagramButton").addEventListener("touchstart", function () { this.href = _canvas.toDataURL(); this.download = "messiaen-diagram-" + new Date().getTime(); }, false);
 
@@ -118,7 +118,7 @@ messiaen.diagram = function () {
         else {
 
             _canvas.onclick = __diagramClick;
-            document.getElementById("playMessiaenChordButton").onclick = function () { __playChordClick(); };
+            document.getElementById("playMessiaenChordButton").onclick = function () { messiaenAudio.playChord(_selectedPitches); };
             document.getElementById("clearMessiaenChordButton").onclick = function () { _selectedPitches = []; _requireRedraw = true; };
             document.getElementById("downloadMessiaenDiagramButton").onclick = function () { this.href = _canvas.toDataURL(); this.download = "messiaen-diagram-" + new Date().getTime(); }
 
@@ -444,7 +444,7 @@ messiaen.diagram = function () {
 
                         _selectedPitches.push(pitchObject.pitchIndex);
                         _requireRedraw = true;
-                        messiaenAudio.loadPitch(_pitches[pitchObject.pitchIndex]);
+                        messiaenAudio.preLoadPitch(_pitches[pitchObject.pitchIndex]);
                     }
                     else if (_selectedPitches.indexOf(pitchObject.pitchIndex) !== -1) {
 
@@ -538,21 +538,6 @@ messiaen.diagram = function () {
                 return true;
             }
         });
-    };
-
-    var __playChordClick = function () {
-
-        var chord = [];
-
-        _selectedPitches.forEach((pitch) => {
-            chord.push(_pitches[pitch]);
-        });
-
-        messiaenAudio.playChord(chord);
-
-        /*for (var k = 0, length = _selectedPitches.length; k < length; k++) {
-            chord.push(_pitches[_selectedPitches[k]]);
-        }*/
     };
 
     return methods;
