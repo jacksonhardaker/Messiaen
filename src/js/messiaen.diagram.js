@@ -1,6 +1,8 @@
 var messiaen = (messiaen) ? messiaen : {};
+
 import browserDetect from './browser-detect.js';
 import { matrix } from './matrix-calculations.js';
+import messiaenAudio from './messiaen.audio.js';
 
 messiaen.diagram = function () {
 
@@ -53,7 +55,7 @@ messiaen.diagram = function () {
     methods.initialise = function () {
 
         browserDetect.init();
-        //messiaen.audio.initialise();
+        messiaenAudio.initialise();
 
         _canvas = document.getElementById("messiaenDiagram");
         _canvas.width = document.documentElement.clientHeight - 170;
@@ -442,7 +444,7 @@ messiaen.diagram = function () {
 
                         _selectedPitches.push(pitchObject.pitchIndex);
                         _requireRedraw = true;
-                        //messiaen.audio.loadPitch(_pitches[pitchObject.pitchIndex]);
+                        messiaenAudio.loadPitch(_pitches[pitchObject.pitchIndex]);
                     }
                     else if (_selectedPitches.indexOf(pitchObject.pitchIndex) !== -1) {
 
@@ -546,7 +548,7 @@ messiaen.diagram = function () {
             chord.push(_pitches[pitch]);
         });
 
-        //messiaen.audio.playChord(chord);
+        messiaenAudio.playChord(chord);
 
         /*for (var k = 0, length = _selectedPitches.length; k < length; k++) {
             chord.push(_pitches[_selectedPitches[k]]);
