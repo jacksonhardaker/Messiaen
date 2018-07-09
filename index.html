@@ -8,54 +8,46 @@
     <title>Messiaen's Modes of Limited Transposition</title>
 
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-    <link rel="Stylesheet" type="text/css" href="Style/style.css" />
+    <!--link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link ref="stylesheet" href="./node_modules/font-awesome/css/font-awesome.css">
+    <link rel="Stylesheet" type="text/css" href="Style/style.css" /-->
+    <link rel='stylesheet' href='style.css'>
 
     <link href="Favicon/favicon.ico" rel="icon" type="image/x-icon" />
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <!-- Custom Fonts -->
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
 
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation" data-0="opacity:0.0;" data-500="opacity:1.0;">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <div class="navbar-brand">
-                    <span class="lead">Messiaen's Modes of Limited Transposition</span>
-                </div>
-            </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <span class="lead">Messiaen's Modes of Limited Transposition</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <div class="collapse navbar-collapse" id="socialMedia">
-                <ul class="nav navbar-nav lead navbar-right">
-                    <li>
-                        <a title="Share on Facebook" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=messiaen.jacksonhardaker.com', '', 'width=500, height=300'); return false;"
-                            href="https://www.facebook.com/sharer/sharer.php?u=messiaen.jacksonhardaker.com" target="_blank">
-                            <i class="fa fa-facebook"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a title="Share on Google+" onclick="window.open('https://plus.google.com/share?url=messiaen.jacksonhardaker.com', '', 'width=500, height=300'); return false;"
-                            href="https://plus.google.com/share?url=messiaen.jacksonhardaker.com" target="_blank">
-                            <i class="fa fa-google-plus-square"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a title="Share on Twitter" onclick="window.open('https://twitter.com/home?status=messiaen.jacksonhardaker.com', '', 'width=500, height=300'); return false;"
-                            href="https://twitter.com/home?status=messiaen.jacksonhardaker.com" target="_blank">
-                            <i class="fa fa-twitter"></i>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a title="Share on Facebook" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=messiaen.jacksonhardaker.com', '', 'width=500, height=300'); return false;"
+                        href="https://www.facebook.com/sharer/sharer.php?u=messiaen.jacksonhardaker.com" target="_blank">
+                        <i class="fa fa-facebook"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a title="Share on Google+" onclick="window.open('https://plus.google.com/share?url=messiaen.jacksonhardaker.com', '', 'width=500, height=300'); return false;"
+                        href="https://plus.google.com/share?url=messiaen.jacksonhardaker.com" target="_blank">
+                        <i class="fa fa-google-plus-square"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a title="Share on Twitter" onclick="window.open('https://twitter.com/home?status=messiaen.jacksonhardaker.com', '', 'width=500, height=300'); return false;"
+                        href="https://twitter.com/home?status=messiaen.jacksonhardaker.com" target="_blank">
+                        <i class="fa fa-twitter"></i>
+                    </a>
+                </li>
+            </ul>
         </div>
     </nav>
 
@@ -72,8 +64,7 @@
                 <div class="col-md-6">
                     <p>
                         Olivier Messiaen's symmetrical
-                        <a href="http://en.wikipedia.org/wiki/Modes_of_limited_transposition"
-                            target="_blank">modes of limited transposition</a>, are a set of scales which fit a strict set of criteria relating
+                        <a href="http://en.wikipedia.org/wiki/Modes_of_limited_transposition" target="_blank">modes of limited transposition</a>, are a set of scales which fit a strict set of criteria relating
                         to their symmetry and the repitition of of their interval groups.
                     </p>
 
@@ -131,27 +122,8 @@
                 <span>Download Diagram</span>
             </a>
         </div>
+
         <!---Start comment and share buttons-->
-        <div style="margin: 80px auto 0 auto; width:800px; text-align: left;">
-
-            <a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal">
-                Tweet
-            </a>
-            <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
-
-            <g:plusone size="medium"></g:plusone>
-
-            <script type="text/javascript">
-                (function () {
-                    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-                    po.src = 'https://apis.google.com/js/plusone.js';
-                    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-                })();
-            </script>
-
-            <script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>
-            <fb:like href="messiaen.jacksonhardaker.com" show_faces="false" width="450" action="like" font="arial"></fb:like>
-        </div>
         <div style="margin: 30px auto 0 auto; width: 800px; text-align: left;">
             <div id="fb-root">
             </div>
@@ -168,17 +140,16 @@
         </div>
 
     </section>
-    <!-- jQuery Version 1.11.0 -->
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+    <!--script type="text/javascript" src="node_modules/jquery/dist/jquery.slim.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="Scripts/browserDetect.js"></script>
     <script type="text/javascript" src="Scripts/messiaen.diagram.min.js"></script>
     <script type="text/javascript" src="Scripts/messiaen.audio.min.js"></script>
 
 
 
-    <script type="text/javascript">
+    <script-- type="text/javascript">
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-18460671-6']);
         _gaq.push(['_trackPageview']);
@@ -189,7 +160,8 @@
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
 
-    </script>
+    </script-->
+    <script type="text/javascript" src="bundle.js"></script>
 </body>
 
 </html>
