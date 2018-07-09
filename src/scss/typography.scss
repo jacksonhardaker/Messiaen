@@ -1,4 +1,5 @@
 @import url('http://fonts.googleapis.com/css?family=Lora|Roboto:100,300');
+@import 'colors.scss';
 
 $base-font: Roboto, Arial, Helvetica, sans-serif;
 $heading-font: Lora, Garamond, Serif;
@@ -11,8 +12,8 @@ html,body {
 }
 
 body {
-    color: #000;
-    background-color: rgba(0,0,0,0.1);
+    color: $blueblack;
+    background-color: $off-white;
     font-family: $base-font;
     font-weight: 100;
 }
@@ -21,7 +22,7 @@ h1 {
     font-family: $heading-font;
     font-size: 48px;
     font-weight: normal;
-    color: #212136;
+    color: $blueblack;
 }
 
 p {
@@ -36,11 +37,17 @@ ul {
     font-weight: 100;
 }
 
+.cover a, .cover a:visited {
+    color: $white-semi-transparent;
+    text-shadow: $text-shadow;
+}
+
 a, a:visited {
-    color: #AC2017;
+    color: $red;
 }
 a:hover, a:active {
-    color: #fff;
+    color: lighten($red, 40%);
+    text-decoration: none;
 }
 
 input, button, select, textarea {
