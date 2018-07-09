@@ -1,4 +1,5 @@
-var BrowserDetect = {
+// module "browserDetect.js"
+const browserDetect = {
 
 	init: function () {
 
@@ -62,7 +63,8 @@ var BrowserDetect = {
 
 		},
 
-		{ string: navigator.userAgent,
+		{
+			string: navigator.userAgent,
 
 			subString: "OmniWeb",
 
@@ -224,6 +226,6 @@ var BrowserDetect = {
 
 	]
 
-
-
 };
+
+export default browserDetect;
