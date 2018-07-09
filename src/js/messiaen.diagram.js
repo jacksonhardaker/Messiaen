@@ -1,5 +1,6 @@
 var messiaen = (messiaen) ? messiaen : {};
 import browserDetect from './browser-detect.js';
+import { matrix } from './matrix-calculations.js';
 
 messiaen.diagram = function () {
 
@@ -32,7 +33,7 @@ messiaen.diagram = function () {
 
     var _canvas = null;
     var _context = null;
-    var _currentTransformationMatrix = null;
+    //var _currentTransformationMatrix = null;
     var _pitchTransformationMatrix = null;
     var _lineTransformationMatrix = null;
     var _pitchObjects = [];
@@ -191,8 +192,6 @@ messiaen.diagram = function () {
         _modeListBoundingBoxes = [];
     };
 
-    var __createMatrixIdentity = function () { return [[1, 0, 0], [0, 1, 0], [0, 0, 1]]; };
-
     var __drawScene = function (rotation) {
 
         if (_requireRedraw) {
@@ -304,11 +303,11 @@ messiaen.diagram = function () {
             var transformationMatrix = null;
 
             // Calculate matrix for pitch labels
-            __setTransform(1, 0, 0, 1, center.x, center.y);
-            __scale(1.06, 1.06);
-            __rotate(rotation * Math.PI);
-            __translate(x, y);
-            __rotate((i + 1) * Math.PI / 6);
+            matrix.setTransformOrigin(_context, 1, 0, 0, 1, center.x, center.y);
+            matrix.scale(_context, 1.06, 1.06);
+            matrix.rotate(_context, rotation * Math.PI);
+            matrix.translate(_context, x, y);
+            matrix.rotate(_context, (i + 1) * Math.PI / 6);
 
             if (browserDetect.browser !== "Safari") {
                 _context.fillText(pitch, 0, 0);
@@ -317,63 +316,18 @@ messiaen.diagram = function () {
                 _context.strokeText(pitch, 0, 0);
             }
 
-            _pitchTransformationMatrix = _currentTransformationMatrix;
+            _pitchTransformationMatrix = matrix.currentTransformationMatrix();
 
             // Calculate matrix for connecting lines
-            __setTransform(1, 0, 0, 1, center.x, center.y);
-            __scale(0.973, 0.973);
-            __rotate(rotation * Math.PI);
-            __translate(x, y);
-            __rotate((i + 1) * Math.PI / 6);
+            matrix.setTransformOrigin(_context, 1, 0, 0, 1, center.x, center.y);
+            matrix.scale(_context, 0.973, 0.973);
+            matrix.rotate(_context, rotation * Math.PI);
+            matrix.translate(_context, x, y);
+            matrix.rotate(_context, (i + 1) * Math.PI / 6);
 
-            _lineTransformationMatrix = _currentTransformationMatrix;
+            _lineTransformationMatrix = matrix.currentTransformationMatrix();
             _pitchObjects.push({ pitchIndex: i, pitchTransformationMatrix: _pitchTransformationMatrix, lineTransformationMatrix: _lineTransformationMatrix });
         });
-
-        /*for (var i = 0; i < _pitches.length, pitch = _pitches[i]; i++) {
-
-
-            if (_highlightedPitches.indexOf(i) !== -1) {
-                _context.fillStyle = "#" + _colors.selectedText;
-            }
-            else {
-                _context.fillStyle = "#" + _colors.defaultText;
-            }
-
-            if (_selectedPitches.indexOf(i) !== -1) {
-                _context.fillStyle = "#" + _colors.highlightedText;
-            }
-
-            var x = Math.round(Math.cos((i + 10) * Math.PI / 6) * radius);
-            var y = Math.round(Math.sin((i + 10) * Math.PI / 6) * radius);
-            var transformationMatrix = null;
-
-            // Calculate matrix for pitch labels
-            __setTransform(1, 0, 0, 1, center.x, center.y);
-            __scale(1.06, 1.06);
-            __rotate(rotation * Math.PI);
-            __translate(x, y);
-            __rotate((i + 1) * Math.PI / 6);
-
-            if (browserDetect.browser !== "Safari") {
-                _context.fillText(pitch, 0, 0);
-            }
-            else {
-                _context.strokeText(pitch, 0, 0);
-            }
-
-            _pitchTransformationMatrix = _currentTransformationMatrix;
-
-            // Calculate matrix for connecting lines
-            __setTransform(1, 0, 0, 1, center.x, center.y);
-            __scale(0.973, 0.973);
-            __rotate(rotation * Math.PI);
-            __translate(x, y);
-            __rotate((i + 1) * Math.PI / 6);
-
-            _lineTransformationMatrix = _currentTransformationMatrix;
-            _pitchObjects.push({ pitchIndex: i, pitchTransformationMatrix: _pitchTransformationMatrix, lineTransformationMatrix: _lineTransformationMatrix });
-        }*/
         _context.closePath();
     };
 
@@ -381,50 +335,6 @@ messiaen.diagram = function () {
 
     methods.getPitches = function () {
         return _pitchObjects;
-    };
-
-    // Matrix manipulation functions
-
-    var __setTransform = function (m11, m21, m12, m22, dx, dy) {
-
-        _context.setTransform(m11, m21, m12, m22, dx, dy);
-
-        _currentTransformationMatrix = [[m11, m12, 0],
-        [m21, m22, 0],
-        [dx, dy, 1]];
-    };
-
-    var __scale = function (aX, aY) {
-
-        _context.scale(aX, aY);
-
-        var m = [[aX, 0, 0],
-        [0, aY, 0],
-        [0, 0, 1]];
-
-        _currentTransformationMatrix = __matrixMultiply(m, _currentTransformationMatrix);
-    };
-
-    var __rotate = function (angle) {
-
-        _context.rotate(angle);
-
-        var m = [[Math.cos(angle), Math.sin(angle), 0],
-        [-Math.sin(angle), Math.cos(angle), 0],
-        [0, 0, 1]];
-
-        _currentTransformationMatrix = __matrixMultiply(m, _currentTransformationMatrix);
-    };
-
-    var __translate = function (x, y) {
-
-        _context.translate(x, y);
-
-        var m = [[1, 0, 0],
-        [0, 1, 0],
-        [x, y, 1]];
-
-        _currentTransformationMatrix = __matrixMultiply(m, _currentTransformationMatrix);
     };
 
     var __getMouseCoords = function (e, relativeToCanvas) {
@@ -524,8 +434,7 @@ messiaen.diagram = function () {
         if (_timeOutId === null) {
             var coords = __getMouseCoords(e, true);
 
-            for (var i = 0, length = _pitchObjects.length; i < length, pitchObject = _pitchObjects[i]; i++) {
-
+            _pitchObjects.forEach((pitchObject, i) => {
                 if (coords.x <= pitchObject.pitchTransformationMatrix[2][0] + 30 && coords.x >= pitchObject.pitchTransformationMatrix[2][0] - 30
                     && coords.y <= pitchObject.pitchTransformationMatrix[2][1] + 30 && coords.y >= pitchObject.pitchTransformationMatrix[2][1] - 30) {
 
@@ -541,7 +450,7 @@ messiaen.diagram = function () {
                         _requireRedraw = true;
                     }
                 }
-            }
+            });
         }
     };
 
@@ -600,8 +509,7 @@ messiaen.diagram = function () {
             }
         }
 
-        for (var i = 0, length = _pitchAngleRanges.length; i < length, pitchAngle = _pitchAngleRanges[i]; i++) {
-
+        _pitchAngleRanges.some((pitchAngle, i) => {
             if (pitchAngle.pitchIndex === _currentKeyIndex) {
                 if (_rotation < pitchAngle.middle - 1 / 64 || _rotation > pitchAngle.middle + 1 / 64) {
                     if (spanCount <= 6) {
@@ -625,39 +533,24 @@ messiaen.diagram = function () {
                     setTimeout(function () { __animateRotation(previousKeyIndex); }, 1);
                 }
 
-                break;
+                return true;
             }
-        }
+        });
     };
 
     var __playChordClick = function () {
 
         var chord = [];
 
-        for (var k = 0, length = _selectedPitches.length; k < length; k++) {
-            chord.push(_pitches[_selectedPitches[k]]);
-        }
+        _selectedPitches.forEach((pitch) => {
+            chord.push(_pitches[pitch]);
+        });
 
         //messiaen.audio.playChord(chord);
-    };
 
-    var __matrixMultiply = function (m1, m2) {
-
-        var result = __createMatrixIdentity();
-
-        for (var x = 0; x < 3; x++) {
-            for (var y = 0; y < 3; y++) {
-                var sum = 0;
-
-                for (var z = 0; z < 3; z++) {
-                    sum += m1[x][z] * m2[z][y];
-                }
-
-                result[x][y] = sum;
-            }
-        }
-
-        return result;
+        /*for (var k = 0, length = _selectedPitches.length; k < length; k++) {
+            chord.push(_pitches[_selectedPitches[k]]);
+        }*/
     };
 
     return methods;
