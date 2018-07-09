@@ -1,0 +1,28 @@
+{
+  "name": "messiaen",
+  "version": "1.0.0",
+  "description": "An interactive graphical representation of Messiaen's modes of limited transportation",
+  "main": "server.js",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^5.1.0",
+    "express": "^4.16.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacksonhardaker/Messiaen.git"
+  },
+  "keywords": [
+    "messiaen"
+  ],
+  "author": "Jackson Hardaker",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jacksonhardaker/Messiaen/issues"
+  },
+  "homepage": "https://github.com/jacksonhardaker/Messiaen#readme"
+}
