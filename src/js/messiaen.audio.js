@@ -1,7 +1,7 @@
 // Messiaen Audio
 
 const messiaenAudio = {};
-const _pitches = ['C', 'C#/Db', 'D', 'D#/Eb', 'E', 'F', 'F#/Gb', 'G', 'G#/Ab', 'A', 'Bb', 'B'];
+const _pitches = ["C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "Bb", "B", "C"];
 const _folders = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
 const _maxChannels = 100;
 const _keyboard = [];
@@ -33,19 +33,17 @@ messiaenAudio.initialise = function () {
     });
 };
 
-messiaenAudio.loadPitch = function (pitch) {
+messiaenAudio.preLoadPitch = function (pitch) {
 
     for (var i = 0; i < _keyboard.length; i++) {
 
-        var note = _keyboard[i];
+        let note = _keyboard[i];
 
         if (note.pitch === pitch && !note.loaded) {
 
-            var audioTag = document.createElement("audio");
-            audioTag.setAttribute("preload", "auto");
-            audioTag.setAttribute("id", note.id);
-            audioTag.setAttribute("src", note.audio);
-            document.body.appendChild(audioTag);
+            let wrapper = document.createElement('div');
+            wrapper.innerHTML = `<audio preload='auto' id='${note.id}' src='${note.audio}'></audio>`;
+            document.body.appendChild(wrapper);
             _keyboard[i].loaded = true;
         }
     }
@@ -53,7 +51,13 @@ messiaenAudio.loadPitch = function (pitch) {
 
 
 
-messiaenAudio.playChord = function (pitchArray) {
+messiaenAudio.playChord = function (selectedPitches) {
+
+    let pitchArray = [];
+
+    selectedPitches.forEach((pitch) => {
+        pitchArray.push(_pitches[pitch]);
+    });
 
     if (pitchArray.length > 0) {
 
@@ -73,7 +77,7 @@ messiaenAudio.playChord = function (pitchArray) {
 
                     if (_keyboard[j].pitch === pitch) {
                         if (_keyboard[j].loaded === false) {
-                            messiaen.audio.loadPitch(pitch);
+                            messiaenAudio.preLoadPitch(pitch);
                         }
 
                         chord.push(_keyboard[j].id);
@@ -91,7 +95,7 @@ messiaenAudio.playChord = function (pitchArray) {
 
                         if (_keyboard[jj].pitch === pitch) {
                             if (_keyboard[jj].loaded === false) {
-                                messiaen.audio.loadPitch(pitch);
+                                messiaenAudio.preLoadPitch(pitch);
                             }
 
                             chord.push(_keyboard[jj].id);
