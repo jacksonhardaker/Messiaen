@@ -6,34 +6,31 @@ const _folders = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B
 const _maxChannels = 100;
 const _keyboard = [];
 
-let _notesToPlay = [];
 let _audioChannels = [];
+let _notesToPlay = [];
 let _playingChord = false;
 let _unisonNotesToPlay = [];
 
 messiaenAudio.initialise = function () {
-    var folder = "Audio/Mp3/";
-    var format = ".mp3";
 
     for (var j = 0; j < 5; j++) {
         for (var k = 0; k < 12; k++) {
 
             _keyboard.push({
                 pitch: _pitches[k],
-                audio: folder + _folders[k] + "/" + (j + 1) + format,
-                id: _pitches[k] + (j + 1),
+                audio: `audio/mp3/${_folders[k]}/${j + 1}.mp3`,
+                id: `${_pitches[k]}${j + 1}`,
                 loaded: false
             });
         }
     }
 
-    for (var i = 0; i < _maxChannels; i++) {
-
-        var audioObj = [];
-        audioObj.channel = new Audio();
-        audioObj.finished = -1;
-        _audioChannels.push(audioObj);
-    }
+    _audioChannels = new Array(100).fill({}).map(() => {
+        return {
+            channel: new Audio(),
+            finished: -1
+        };
+    });
 };
 
 messiaenAudio.loadPitch = function (pitch) {
