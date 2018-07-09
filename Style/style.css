@@ -96,27 +96,25 @@ hr.small {
     max-width: 100px;
 }
 
-nav {
-    opacity: 0.0;
+
+
+nav > .container-fluid > .navbar-brand {
+    height: 50px;
+    padding: 0 15px;
 }
 
-    nav > .container-fluid > .navbar-brand {
-        height: 50px;
-        padding: 0 15px;
-    }
+nav > .container-fluid > .navbar-brand > span > a {
+    color: #777;
+    transition: color ease-in 0.2s;
+}
 
-        nav > .container-fluid > .navbar-brand > span > a {
-            color: #777;
-            transition: color ease-in 0.2s;
-        }
+nav > .container-fluid > .navbar-brand > span > a:hover {
+    color: #aaa;
+}
 
-            nav > .container-fluid > .navbar-brand > span > a:hover {
-                color: #aaa;
-            }
-
-            nav > .container-fluid > .navbar-brand > span > a > i {
-                padding: 9px 10px 0;
-            }
+nav > .container-fluid > .navbar-brand > span > a > i {
+    padding: 9px 10px 0;
+}
 
 /* Header */
 
