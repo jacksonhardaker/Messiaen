@@ -1,5 +1,7 @@
 //js
-//import './js/browser-detect.js';
+import './js/browser-detect.js';
+import './js/matrix-calculations.js';
+import './js/messiaen.audio.js';
 import './js/messiaen.diagram.js';
 
 import 'bootstrap';
