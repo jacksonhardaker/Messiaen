@@ -1,7 +1,9 @@
 // Messiaen Audio
 
-const messiaenAudio = {};
-const _pitches = ["C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "Bb", "B", "C"];
+const messiaenAudio = {
+    pitches: ["C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "Bb", "B", "C"]
+};
+
 const _folders = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
 const _maxChannels = 100;
 const _keyboard = [];
@@ -17,15 +19,15 @@ messiaenAudio.initialise = function () {
         for (var k = 0; k < 12; k++) {
 
             _keyboard.push({
-                pitch: _pitches[k],
+                pitch: messiaenAudio.pitches[k],
                 audio: `audio/mp3/${_folders[k]}/${j + 1}.mp3`,
-                id: `${_pitches[k]}${j + 1}`,
+                id: `${messiaenAudio.pitches[k]}${j + 1}`,
                 loaded: false
             });
         }
     }
 
-    _audioChannels = new Array(100).fill({}).map(() => {
+    _audioChannels = new Array(_maxChannels).fill({}).map(() => {
         return {
             channel: new Audio(),
             finished: -1
@@ -48,24 +50,24 @@ messiaenAudio.preLoadPitch = function (pitch) {
 
 
 
-messiaenAudio.playChord = function (selectedPitches) {
+messiaenAudio.buildAndPlayChord = function (selectedPitches) {
 
-    let pitchArray = selectedPitches.map(pitch => _pitches[pitch]);
+    let pitchArray = selectedPitches.map(pitch => messiaenAudio.pitches[pitch]);
 
     if (pitchArray.length > 0 && !_playingChord) {
 
 
         _playingChord = true;
-        var chord = [];
-        var keyboardStartingIndex = 0;
-        var noteAdded = false;
+        let chord = [];
+        let keyboardStartingIndex = 0;
+        let noteAdded = false;
 
-        for (var i = 0; i < pitchArray.length; i++) {
-
-            var pitch = pitchArray[i];
+        pitchArray.forEach((pitch, i) => {
             noteAdded = false;
 
-            for (var j = keyboardStartingIndex; j < _keyboard.length; j++) {
+
+            // Step up the chromatic scale
+            for (let j = keyboardStartingIndex; j < _keyboard.length; j++) {
 
                 if (_keyboard[j].pitch === pitch) {
                     if (_keyboard[j].loaded === false) {
@@ -78,29 +80,29 @@ messiaenAudio.playChord = function (selectedPitches) {
 
                     break;
                 }
-
             }
 
+            // Didn't find a valid note to play, so step down the chromatic scale
             if (!noteAdded) {
 
-                for (var jj = keyboardStartingIndex; jj >= 0; jj--) {
+                for (let k = keyboardStartingIndex; k >= 0; k--) {
 
-                    if (_keyboard[jj].pitch === pitch) {
-                        if (_keyboard[jj].loaded === false) {
+                    if (_keyboard[k].pitch === pitch) {
+                        if (_keyboard[k].loaded === false) {
                             messiaenAudio.preLoadPitch(pitch);
                         }
 
-                        chord.push(_keyboard[jj].id);
-                        keyboardStartingIndex = jj;
+                        chord.push(_keyboard[k].id);
+                        keyboardStartingIndex = k;
                         noteAdded = true;
 
                         break;
                     }
                 }
             }
-        }
+        });
 
-        __playChord(chord);
+        __play(chord);
     }
 }
 
@@ -108,30 +110,31 @@ messiaenAudio.playChord = function (selectedPitches) {
  * Private Functions
  */
 
-function __play() {
+function __playNoteOfChordIndividually() {
 
     var audio = document.getElementById(_notesToPlay[0]);
 
-    for (var i = 0; i < _maxChannels; i++) {
+    _audioChannels.some((audioChannel) => {
+        let now = new Date()
 
-        var now = new Date();
+        if (audioChannel.finished < now.getTime()) {
+            audioChannel.finished = now.getTime() + audio.duration * 1000;
+            audioChannel.channel.src = audio.src;
+            audioChannel.channel.load();
+            audioChannel.channel.play();
 
-        if (_audioChannels[i].finished < now.getTime()) {			// is this channel finished?
-
-            _audioChannels[i].finished = now.getTime() + audio.duration * 1000;
-            _audioChannels[i].channel.src = audio.src;
-            _audioChannels[i].channel.load();
-            _audioChannels[i].channel.play();
-
-            break;
+            return true;
         }
-    }
+    });
 
+    // Start constructing unison chord
     _unisonNotesToPlay.push(_notesToPlay[0]);
+
+    // Remove played note from list of notes to play
     _notesToPlay.splice(0, 1);
 
     if (_notesToPlay.length > 0) {
-        setTimeout(__play, 150);
+        setTimeout(__playNoteOfChordIndividually, 150);
     }
     else {
         setTimeout(__playUnisonChord, 900);
@@ -142,34 +145,34 @@ function __playUnisonChord() {
 
     var audio = document.getElementById(_unisonNotesToPlay[0]);
 
-    for (var i = 0; i < _maxChannels; i++) {
+    _audioChannels.some((audioChannel) => {
+        let now = new Date()
 
-        var now = new Date();
+        if (audioChannel.finished < now.getTime()) {			// is this channel finished?
 
-        if (_audioChannels[i].finished < now.getTime()) {			// is this channel finished?
+            audioChannel.finished = now.getTime() + audio.duration * 1000;
+            audioChannel.channel.src = audio.src;
+            audioChannel.channel.load();
+            audioChannel.channel.play();
 
-            _audioChannels[i].finished = now.getTime() + audio.duration * 1000;
-            _audioChannels[i].channel.src = audio.src;
-            _audioChannels[i].channel.load();
-            _audioChannels[i].channel.play();
-
-            break;
+            return true;
         }
+    });
 
-    }
-
+    // Remove played note from list of notes to play
     _unisonNotesToPlay.splice(0, 1);
 
     if (_unisonNotesToPlay.length > 0) {
         __playUnisonChord();
     }
     else {
+        // Finished
         _playingChord = false;
         __togglePlayButton();
     }
 }
 
-function __playChord(chord) {
+function __play(chord) {
 
     if (chord && chord.length !== 0) {
         __togglePlayButton();
@@ -185,15 +188,15 @@ function __playChord(chord) {
         }
 
         if (allLoaded) {
-            for (var k = 0; k < chord.length; k++) {
-                _notesToPlay.push(chord[k]);
-            }
+            chord.forEach((note) => {
+                _notesToPlay.push(note);
+            });
 
-            __play();
+            __playNoteOfChordIndividually();
         }
         else {
             // Wait a wee bit for the sounds to load, then try playing again.
-            setTimeout(function () { __playChord(chord); }, 100);
+            setTimeout(function () { __play(chord); }, 100);
         }
     }
     else {
