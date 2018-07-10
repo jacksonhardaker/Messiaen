@@ -31,87 +31,78 @@ messiaenAudio.initialise = function () {
             finished: -1
         };
     });
-};
+}
 
 messiaenAudio.preLoadPitch = function (pitch) {
 
-    for (var i = 0; i < _keyboard.length; i++) {
-
-        let note = _keyboard[i];
-
+    _keyboard.forEach((note) => {
         if (note.pitch === pitch && !note.loaded) {
 
             let wrapper = document.createElement('div');
             wrapper.innerHTML = `<audio preload='auto' id='${note.id}' src='${note.audio}'></audio>`;
             document.body.appendChild(wrapper);
-            _keyboard[i].loaded = true;
+            note.loaded = true;
         }
-    }
-};
+    });
+}
 
 
 
 messiaenAudio.playChord = function (selectedPitches) {
 
-    let pitchArray = [];
+    let pitchArray = selectedPitches.map(pitch => _pitches[pitch]);
 
-    selectedPitches.forEach((pitch) => {
-        pitchArray.push(_pitches[pitch]);
-    });
+    if (pitchArray.length > 0 && !_playingChord) {
 
-    if (pitchArray.length > 0) {
 
-        if (!_playingChord) {
+        _playingChord = true;
+        var chord = [];
+        var keyboardStartingIndex = 0;
+        var noteAdded = false;
 
-            _playingChord = true;
-            var chord = [];
-            var keyboardStartingIndex = 0;
-            var noteAdded = false;
+        for (var i = 0; i < pitchArray.length; i++) {
 
-            for (var i = 0; i < pitchArray.length; i++) {
+            var pitch = pitchArray[i];
+            noteAdded = false;
 
-                var pitch = pitchArray[i];
-                noteAdded = false;
+            for (var j = keyboardStartingIndex; j < _keyboard.length; j++) {
 
-                for (var j = keyboardStartingIndex; j < _keyboard.length; j++) {
+                if (_keyboard[j].pitch === pitch) {
+                    if (_keyboard[j].loaded === false) {
+                        messiaenAudio.preLoadPitch(pitch);
+                    }
 
-                    if (_keyboard[j].pitch === pitch) {
-                        if (_keyboard[j].loaded === false) {
+                    chord.push(_keyboard[j].id);
+                    keyboardStartingIndex = j;
+                    noteAdded = true;
+
+                    break;
+                }
+
+            }
+
+            if (!noteAdded) {
+
+                for (var jj = keyboardStartingIndex; jj >= 0; jj--) {
+
+                    if (_keyboard[jj].pitch === pitch) {
+                        if (_keyboard[jj].loaded === false) {
                             messiaenAudio.preLoadPitch(pitch);
                         }
 
-                        chord.push(_keyboard[j].id);
-                        keyboardStartingIndex = j;
+                        chord.push(_keyboard[jj].id);
+                        keyboardStartingIndex = jj;
                         noteAdded = true;
 
                         break;
                     }
-
-                }
-
-                if (!noteAdded) {
-
-                    for (var jj = keyboardStartingIndex; jj >= 0; jj--) {
-
-                        if (_keyboard[jj].pitch === pitch) {
-                            if (_keyboard[jj].loaded === false) {
-                                messiaenAudio.preLoadPitch(pitch);
-                            }
-
-                            chord.push(_keyboard[jj].id);
-                            keyboardStartingIndex = jj;
-                            noteAdded = true;
-
-                            break;
-                        }
-                    }
                 }
             }
-
-            __playChord(chord);
         }
+
+        __playChord(chord);
     }
-};
+}
 
 /**
  * Private Functions
@@ -145,9 +136,7 @@ function __play() {
     else {
         setTimeout(__playUnisonChord, 900);
     }
-};
-
-
+}
 
 function __playUnisonChord() {
 
@@ -176,16 +165,14 @@ function __playUnisonChord() {
     }
     else {
         _playingChord = false;
-        document.getElementById('playMessiaenChordButton').children[0].style.display = 'block';
-        document.getElementById('playMessiaenChordButton').children[1].style.display = 'none';
+        __togglePlayButton();
     }
-};
+}
 
 function __playChord(chord) {
 
     if (chord && chord.length !== 0) {
-        document.getElementById('playMessiaenChordButton').children[0].style.display = 'none';
-        document.getElementById('playMessiaenChordButton').children[1].style.display = 'block';
+        __togglePlayButton();
 
         var allLoaded = true;
 
@@ -210,9 +197,14 @@ function __playChord(chord) {
         }
     }
     else {
-        document.getElementById('playMessiaenChordButton').children[0].style.display = 'block';
-        document.getElementById('playMessiaenChordButton').children[1].style.display = 'none';
+        __togglePlayButton();
     }
-};
+}
+
+function __togglePlayButton() {
+    
+    document.getElementById('playMessiaenChordButton').children[0].style.display = _playingChord ? 'none' : 'block';
+    document.getElementById('playMessiaenChordButton').children[1].style.display = _playingChord ? 'block': 'none';
+}
 
 export default messiaenAudio;
