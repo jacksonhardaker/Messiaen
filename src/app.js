@@ -9,5 +9,5 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
 //scss
-import './scss/base.scss';
 import './scss/typography.scss';
+import './scss/base.scss';
