@@ -10,8 +10,6 @@ messiaen.diagram = function () {
 
     var _colors = { background: "dbcebb", heading: "212136", circle: "1E0F13", defaultText: "fff", selectedText: "1E0F13", highlightedText: "AC2017", modeShape: "fff", chordShape: "AC2017" };
 
-    const _pitches = ["C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "Bb", "B", "C"];
-
     var _pitchAngleRanges = [{ pitchIndex: 11, lower: -1 / 12, upper: 1 / 12, middle: 0 },
     { pitchIndex: 10, lower: 1 / 12, upper: 3 / 12, middle: 2 / 12 },
     { pitchIndex: 9, lower: 3 / 12, upper: 5 / 12, middle: 4 / 12 },
@@ -85,7 +83,7 @@ messiaen.diagram = function () {
 
         if ('ontouchstart' in document.documentElement) {
 
-            document.getElementById("playMessiaenChordButton").addEventListener("touchstart", function (e) { messiaenAudio.playChord(_selectedPitches); return false; }, false);
+            document.getElementById("playMessiaenChordButton").addEventListener("touchstart", function (e) { messiaenAudio.buildAndPlayChord(_selectedPitches); return false; }, false);
             document.getElementById("clearMessiaenChordButton").addEventListener("touchstart", function (e) { _selectedPitches = []; _requireRedraw = true; return false; }, false);
             document.getElementById("downloadMessiaenDiagramButton").addEventListener("touchstart", function () { this.href = _canvas.toDataURL(); this.download = "messiaen-diagram-" + new Date().getTime(); }, false);
 
@@ -118,7 +116,7 @@ messiaen.diagram = function () {
         else {
 
             _canvas.onclick = __diagramClick;
-            document.getElementById("playMessiaenChordButton").onclick = function () { messiaenAudio.playChord(_selectedPitches); };
+            document.getElementById("playMessiaenChordButton").onclick = function () { messiaenAudio.buildAndPlayChord(_selectedPitches); };
             document.getElementById("clearMessiaenChordButton").onclick = function () { _selectedPitches = []; _requireRedraw = true; };
             document.getElementById("downloadMessiaenDiagramButton").onclick = function () { this.href = _canvas.toDataURL(); this.download = "messiaen-diagram-" + new Date().getTime(); }
 
@@ -288,7 +286,7 @@ messiaen.diagram = function () {
             _highlightedPitches.push(scaleDegree);
         }
 
-        _pitches.forEach((pitch, i) => {
+        messiaenAudio.pitches.forEach((pitch, i) => {
             if (_highlightedPitches.indexOf(i) !== -1) {
                 _context.fillStyle = "#" + _colors.selectedText;
             }
@@ -444,7 +442,7 @@ messiaen.diagram = function () {
 
                         _selectedPitches.push(pitchObject.pitchIndex);
                         _requireRedraw = true;
-                        messiaenAudio.preLoadPitch(_pitches[pitchObject.pitchIndex]);
+                        messiaenAudio.preLoadPitch(messiaenAudio.pitches[pitchObject.pitchIndex]);
                     }
                     else if (_selectedPitches.indexOf(pitchObject.pitchIndex) !== -1) {
 
