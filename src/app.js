@@ -8,6 +8,8 @@ import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 
+import '../images/messiaen.png';
+
 //scss
 import './scss/typography.scss';
 import './scss/base.scss';
