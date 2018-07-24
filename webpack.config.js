@@ -9,7 +9,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.js",
-    publicPath: "/messiaen/",
+    publicPath: "/Messiaen/",
     hotUpdateChunkFilename: "hot/hot-update.js",
     hotUpdateMainFilename: "hot/hot-update.json"
   },
@@ -19,7 +19,7 @@ module.exports = {
         test: /\.scss$/,
         use: ["css-hot-loader"].concat(
           ExtractTextPlugin.extract({
-            publicPath: "/messiaen/dist/",
+            publicPath: "/Messiaen/dist/",
             fallback: "style-loader",
             use: ["css-loader", "resolve-url-loader", "sass-loader?sourceMap"]
           })
@@ -29,7 +29,7 @@ module.exports = {
         test: /\.css$/,
         use: ["css-hot-loader"].concat(
           ExtractTextPlugin.extract({
-            publicPath: "/messiaen/dist/",
+            publicPath: "/Messiaen/dist/",
             fallback: "style-loader",
             use: ["css-loader"]
           })
