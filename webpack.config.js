@@ -1,5 +1,5 @@
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -29,21 +29,31 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        use: ['css-hot-loader'].concat(
-          ExtractTextPlugin.extract({
-            fallback: 'style-loader',
-            use: ['css-loader', 'resolve-url-loader', 'sass-loader?sourceMap']
-          })
-        )
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              hmr: true,
+              reloadAll: true,
+            },
+          },
+          'css-loader',
+          'resolve-url-loader',
+          'sass-loader?sourceMap'
+        ]
       },
       {
         test: /\.css$/,
-        use: ['css-hot-loader'].concat(
-          ExtractTextPlugin.extract({
-            fallback: 'style-loader',
-            use: ['css-loader']
-          })
-        )
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              hmr: true,
+              reloadAll: true,
+            },
+          },
+          'css-loader',
+        ]
       },
       {
         test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -56,7 +66,7 @@ module.exports = {
     ]
   },
   plugins: [
-    new ExtractTextPlugin('style.css'),
+    new MiniCssExtractPlugin(),
     new HtmlWebpackPlugin({
       title: 'Messiaen\'s Modes of Limited Transposition',
       template: path.join(__dirname, 'src', 'index.html')
