@@ -39,15 +39,9 @@ const DiagramContainer = () => {
       </div>
 
       <div>
-        <button id='playMessiaenChordButton'>
-          <span>Play chord</span>
-        </button>
-        <button id='clearMessiaenChordButton'>
-          <span>Clear chord</span>
-        </button>
-        <button id='downloadMessiaenDiagramButton'>
-          <span>Download Diagram</span>
-        </button>
+        <button className='button-outline' id='playMessiaenChordButton'>Play chord</button>
+        <button className='button-outline' id='clearMessiaenChordButton'>Clear chord</button>
+        <button className='button-outline' id='downloadMessiaenDiagramButton'>Download Diagram</button>
       </div>
     </section>
   );

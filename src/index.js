@@ -3,7 +3,8 @@ import './js/matrix-calculations.js';
 import './js/messiaen.audio.js';
 import './js/messiaen.diagram.js';
 
-import 'milligram/dist/milligram.min.css';
+import './scss/vendor.scss';
+
 import './scss/typography.scss';
 import './scss/base.scss';
 import { renderApp } from './App/App.js';
