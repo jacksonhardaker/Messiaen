@@ -62,7 +62,7 @@ messiaenAudio.buildAndPlayChord = function (selectedPitches) {
     let keyboardStartingIndex = 0;
     let noteAdded = false;
 
-    pitchArray.forEach((pitch, i) => {
+    pitchArray.forEach((pitch) => {
       noteAdded = false;
 
 

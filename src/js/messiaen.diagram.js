@@ -42,7 +42,6 @@ messiaen.diagram = function () {
   var _currentKeyIndex = 11;
   var _currentModeIndex = 0;
   var _rotation = 0;
-  var _modeListBoundingBoxes = [];
   var _diagramMouseDown = false;
   var _previousMouseCoords = null;
   var _requireRedraw = false;
@@ -62,7 +61,7 @@ messiaen.diagram = function () {
 
     var modeSelect = document.getElementById('modeSelect');
     modeSelect.selectedIndex = 0;
-    modeSelect.onchange = function (e) {
+    modeSelect.onchange = function () {
 
       var l = document.getElementById('modeSelect');
       _currentModeIndex = Number(l.children[l.selectedIndex].value);
@@ -72,7 +71,7 @@ messiaen.diagram = function () {
 
     var keySelect = document.getElementById('keySelect');
     keySelect.selectedIndex = 0;
-    keySelect.onchange = function (e) {
+    keySelect.onchange = function () {
 
       var previousKeyIndex = _currentKeyIndex;
       var l = document.getElementById('keySelect');
@@ -83,8 +82,8 @@ messiaen.diagram = function () {
 
     if ('ontouchstart' in document.documentElement) {
 
-      document.getElementById('playMessiaenChordButton').addEventListener('touchstart', function (e) { messiaenAudio.buildAndPlayChord(_selectedPitches); return false; }, false);
-      document.getElementById('clearMessiaenChordButton').addEventListener('touchstart', function (e) { _selectedPitches = []; _requireRedraw = true; return false; }, false);
+      document.getElementById('playMessiaenChordButton').addEventListener('touchstart', function () { messiaenAudio.buildAndPlayChord(_selectedPitches); return false; }, false);
+      document.getElementById('clearMessiaenChordButton').addEventListener('touchstart', function () { _selectedPitches = []; _requireRedraw = true; return false; }, false);
       document.getElementById('downloadMessiaenDiagramButton').addEventListener('touchstart', function () { this.href = _canvas.toDataURL(); this.download = 'messiaen-diagram-' + new Date().getTime(); }, false);
 
       _canvas.addEventListener('touchstart', function (e) {
@@ -100,7 +99,7 @@ messiaen.diagram = function () {
         __diagramClick(e);
 
         document.addEventListener('touchmove', __documentMouseMove, false);
-        document.addEventListener('touchend', function (e) {
+        document.addEventListener('touchend', function () {
 
           _diagramMouseDown = false;
           _previousMouseCoords = null;
@@ -186,13 +185,15 @@ messiaen.diagram = function () {
 
   var __clearScene = function () {
 
+    // Rendering breaks without this ¯\_(ツ)_/¯
+    // eslint-disable-next-line no-self-assign
     _canvas.width = _canvas.width;
+
     _highlightedPitches = [];
     _pitchObjects = [];
-    _modeListBoundingBoxes = [];
   };
 
-  var __drawScene = function (rotation) {
+  var __drawScene = function () {
 
     if (_requireRedraw) {
       _requireRedraw = false;
@@ -251,7 +252,7 @@ messiaen.diagram = function () {
         _context.lineWidth = 2;
         _context.moveTo(_pitchObjects[_selectedPitches[0]].lineTransformationMatrix[2][0], _pitchObjects[_selectedPitches[0]].lineTransformationMatrix[2][1]);
 
-        var j = 1;
+        j = 1;
         while (j < _selectedPitches.length) {
 
           _context.lineTo(_pitchObjects[_selectedPitches[j]].lineTransformationMatrix[2][0], _pitchObjects[_selectedPitches[j]].lineTransformationMatrix[2][1]);
@@ -300,7 +301,6 @@ messiaen.diagram = function () {
 
       var x = Math.round(Math.cos((i + 10) * Math.PI / 6) * radius);
       var y = Math.round(Math.sin((i + 10) * Math.PI / 6) * radius);
-      var transformationMatrix = null;
 
       // Calculate matrix for pitch labels
       matrix.setTransformOrigin(_context, 1, 0, 0, 1, center.x, center.y);
@@ -423,18 +423,12 @@ messiaen.diagram = function () {
     }
   };
 
-  var __diagramMouseMove = function (e) {
-    if (!_diagramMouseDown) {
-      var coords = __getMouseCoords(e, true);
-    }
-  };
-
   var __diagramClick = function (e) {
 
     if (_timeOutId === null) {
       var coords = __getMouseCoords(e, true);
 
-      _pitchObjects.forEach((pitchObject, i) => {
+      _pitchObjects.forEach((pitchObject) => {
         if (coords.x <= pitchObject.pitchTransformationMatrix[2][0] + 30 && coords.x >= pitchObject.pitchTransformationMatrix[2][0] - 30
                     && coords.y <= pitchObject.pitchTransformationMatrix[2][1] + 30 && coords.y >= pitchObject.pitchTransformationMatrix[2][1] - 30) {
 
@@ -454,47 +448,6 @@ messiaen.diagram = function () {
     }
   };
 
-  var __diagramKeyPress = function (e) {
-    var e = e || window.event;
-    var keyCode = e.keyCode || e.which;
-
-    switch (keyCode) {
-    case 37:
-      _rotation -= 1 / 128;
-
-      if (_rotation < 0) {
-        _rotation = 2 + _rotation;
-      }
-
-      _requireRedraw = true;
-
-      break;
-    case 40:
-      _selectedPitches = [];
-      _currentModeIndex = (_currentModeIndex < 6) ? _currentModeIndex + 1 : 0;
-      _requireRedraw = true;
-
-      break;
-
-    case 39:
-      _rotation += 1 / 128;
-
-      if (_rotation >= 2) {
-        _rotation = _rotation - 2;
-      }
-
-      _requireRedraw = true;
-
-      break;
-    case 38:
-      _selectedPitches = [];
-      _currentModeIndex = (_currentModeIndex > 0) ? _currentModeIndex - 1 : 6;
-      _requireRedraw = true;
-
-      break;
-    }
-  };
-
   var __animateRotation = function (previousKeyIndex) {
 
     var index = previousKeyIndex;
@@ -509,7 +462,7 @@ messiaen.diagram = function () {
       }
     }
 
-    _pitchAngleRanges.some((pitchAngle, i) => {
+    _pitchAngleRanges.some((pitchAngle) => {
       if (pitchAngle.pitchIndex === _currentKeyIndex) {
         if (_rotation < pitchAngle.middle - 1 / 64 || _rotation > pitchAngle.middle + 1 / 64) {
           if (spanCount <= 6) {
