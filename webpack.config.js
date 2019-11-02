@@ -11,37 +11,44 @@ module.exports = {
     filename: '[name].js'
   },
   module: {
-    rules: [{
-      test: /\.js$/,
-      exclude: /node_modules/,
-      loaders: [],
-    },
-    {
-      test: /\.scss$/,
-      use: ['css-hot-loader'].concat(
-        ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: ['css-loader', 'resolve-url-loader', 'sass-loader?sourceMap']
-        })
-      )
-    },
-    {
-      test: /\.css$/,
-      use: ['css-hot-loader'].concat(
-        ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: ['css-loader']
-        })
-      )
-    },
-    {
-      test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-      loader: 'url-loader?limit=10000&mimetype=application/font-woff'
-    },
-    {
-      test: /\.(ttf|eot|svg|png|jpg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-      loader: 'file-loader'
-    }
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        exclude: /node_modules\//,
+        use: {
+          loader: "babel-loader",
+          options: {
+            cacheDirectory: true
+          }
+        }
+      },
+      {
+        test: /\.scss$/,
+        use: ['css-hot-loader'].concat(
+          ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: ['css-loader', 'resolve-url-loader', 'sass-loader?sourceMap']
+          })
+        )
+      },
+      {
+        test: /\.css$/,
+        use: ['css-hot-loader'].concat(
+          ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: ['css-loader']
+          })
+        )
+      },
+      {
+        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+      },
+      {
+        test: /\.(ttf|eot|svg|png|jpg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: 'file-loader'
+      }
     ]
   },
   plugins: [
