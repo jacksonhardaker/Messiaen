@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "An interactive graphical representation of Messiaen's modes of limited transportation",
   "main": "server.js",
-  "dependencies": {},
+  "dependencies": {
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.6.4",
     "@babel/preset-env": "^7.6.3",

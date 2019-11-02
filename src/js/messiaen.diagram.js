@@ -33,7 +33,6 @@ messiaen.diagram = function () {
 
   var _canvas = null;
   var _context = null;
-  //var _currentTransformationMatrix = null;
   var _pitchTransformationMatrix = null;
   var _lineTransformationMatrix = null;
   var _pitchObjects = [];

@@ -6,13 +6,16 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="messiaen" content="data" data-title="<%= htmlWebpackPlugin.options.title %>">
 </head>
 
 <body>
 
+    <div id="app"></div>
+
     <section id="cover" class="cover">
         <div class="container text-center">
-            <h1><%= htmlWebpackPlugin.options.title %></h1>
+            <h1></h1>
         </div>
     </section>
 
@@ -80,13 +83,6 @@
             <a id="downloadMessiaenDiagramButton" class="btn btn-light">
                 <span>Download Diagram</span>
             </a>
-        </div>
-
-        <div style="margin: 30px auto 0 auto; text-align: center; padding-bottom: 30px;">
-            &copy; 2011
-            <br /> Created by
-            <a href="http://www.syberenvanmunster.com/" target="_blank">Syberen van Munster</a> and
-            <a href="http://www.jacksonhardaker.com" target="_blank">Jackson Hardaker</a>.
         </div>
 
     </section>
