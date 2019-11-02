@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+
+    <section id="cover" class="cover">
+        <div class="container text-center">
+            <h1><%= htmlWebpackPlugin.options.title %></h1>
+        </div>
+    </section>
+
+    <section class="messiaenbackground">
+        <div class="container lead" style="padding:5em 0;">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                    <p>
+                        Olivier Messiaen's symmetrical
+                        <a href="http://en.wikipedia.org/wiki/Modes_of_limited_transposition" target="_blank">modes of limited transposition</a>, are a set of scales which fit a strict set of criteria relating
+                        to their symmetry and the repitition of of their interval groups.
+                    </p>
+
+                    <b>Instructions:</b>
+                    <ul>
+                        <li>Choose your mode and the root note you want.</li>
+                        <li>Click and drag to rotate the mode diagram.</li>
+                        <li>Click notes from the scale to construct a chord from the bottom up.</li>
+                        <li>Press the 'Play chord' button to hear your masterpiece! If you don't like the outcome, you can always
+                            clear the chord and start again, or remove individual notes.</li>
+                    </ul>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+
+        </div>
+
+        <div style="text-align: center;">
+            <select id="modeSelect">
+                <option value="0">First mode / Whole-tone scale</option>
+                <option value="1">Second mode / Diminished scale</option>
+                <option value="2">Third mode</option>
+                <option value="3">Fourth mode</option>
+                <option value="4">Fifth mode</option>
+                <option value="5">Sixth mode</option>
+                <option value="6">Seventh mode</option>
+            </select>
+            <select id="keySelect">
+                <option value="11">C</option>
+                <option value="0">C#/Db</option>
+                <option value="1">D</option>
+                <option value="2">D#/Eb</option>
+                <option value="3">E</option>
+                <option value="4">F</option>
+                <option value="5">F#/Gb</option>
+                <option value="6">G</option>
+                <option value="7">G#/Ab</option>
+                <option value="8">A</option>
+                <option value="9">A#/Bb</option>
+                <option value="10">B</option>
+            </select>
+        </div>
+        <div style="text-align: center;">
+            <canvas id="messiaenDiagram" width="300" height="300" style="-moz-user-select: -moz-none; -khtml-user-select: none; -webkit-user-select: none;"></canvas>
+        </div>
+        <div style="margin: 0 auto 50px auto; width: 800px; text-align: left;">
+            <div id="playMessiaenChordButton" class="btn btn-light">
+                <span>Play chord</span>
+                <i style="display: none; padding: 3px 25.3px 2.6px 25.25px" class="fa fa-circle-o-notch fa-spin"></i>
+            </div>
+            <div id="clearMessiaenChordButton" class="btn btn-light">
+                <span>Clear chord</span>
+            </div>
+            <a id="downloadMessiaenDiagramButton" class="btn btn-light">
+                <span>Download Diagram</span>
+            </a>
+        </div>
+
+        <div style="margin: 30px auto 0 auto; text-align: center; padding-bottom: 30px;">
+            &copy; 2011
+            <br /> Created by
+            <a href="http://www.syberenvanmunster.com/" target="_blank">Syberen van Munster</a> and
+            <a href="http://www.jacksonhardaker.com" target="_blank">Jackson Hardaker</a>.
+        </div>
+
+    </section>
+</body>
+
+</html>
