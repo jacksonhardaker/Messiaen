@@ -2,7 +2,7 @@ import React from 'react';
 
 const SiteHeader = ({ title }) => {
   return (
-    <header>
+    <header className='container'>
       <h1>{title}</h1>
     </header>
   );

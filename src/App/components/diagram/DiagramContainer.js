@@ -8,33 +8,41 @@ const DiagramContainer = () => {
 
   return (
     <section className='messiaenbackground'>
-      <div style={{textAlign: 'center'}}>
-        <select id='modeSelect'>
-          <option value='0'>First mode / Whole-tone scale</option>
-          <option value='1'>Second mode / Diminished scale</option>
-          <option value='2'>Third mode</option>
-          <option value='3'>Fourth mode</option>
-          <option value='4'>Fifth mode</option>
-          <option value='5'>Sixth mode</option>
-          <option value='6'>Seventh mode</option>
-        </select>
-        <select id='keySelect'>
-          <option value='11'>C</option>
-          <option value='0'>C#/Db</option>
-          <option value='1'>D</option>
-          <option value='2'>D#/Eb</option>
-          <option value='3'>E</option>
-          <option value='4'>F</option>
-          <option value='5'>F#/Gb</option>
-          <option value='6'>G</option>
-          <option value='7'>G#/Ab</option>
-          <option value='8'>A</option>
-          <option value='9'>A#/Bb</option>
-          <option value='10'>B</option>
-        </select>
+      <div style={{ textAlign: 'center' }}>
+        <div className="container">
+          <div className="row">
+            <div className="column column-40 column-offset-10">
+              <select id='modeSelect'>
+                <option value='0'>First mode / Whole-tone scale</option>
+                <option value='1'>Second mode / Diminished scale</option>
+                <option value='2'>Third mode</option>
+                <option value='3'>Fourth mode</option>
+                <option value='4'>Fifth mode</option>
+                <option value='5'>Sixth mode</option>
+                <option value='6'>Seventh mode</option>
+              </select>
+            </div>
+            <div className="column column-40">
+              <select id='keySelect'>
+                <option value='11'>C</option>
+                <option value='0'>C#/Db</option>
+                <option value='1'>D</option>
+                <option value='2'>D#/Eb</option>
+                <option value='3'>E</option>
+                <option value='4'>F</option>
+                <option value='5'>F#/Gb</option>
+                <option value='6'>G</option>
+                <option value='7'>G#/Ab</option>
+                <option value='8'>A</option>
+                <option value='9'>A#/Bb</option>
+                <option value='10'>B</option>
+              </select>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div style={{textAlign: 'center'}}>
+      <div style={{ textAlign: 'center' }}>
         <canvas id='messiaenDiagram' width='300' height='300' style={canvasStyles}></canvas>
       </div>
 
