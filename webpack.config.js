@@ -1,56 +1,60 @@
-const path = require("path");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const webpack = require("webpack");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+const path = require('path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  mode: "development",
-  entry: "./src/app.js",
+  mode: 'development',
+  context: path.join(__dirname, 'src'),
+  entry: './app.js',
   output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "bundle.js",
-    publicPath: "/Messiaen/",
-    hotUpdateChunkFilename: "hot/hot-update.js",
-    hotUpdateMainFilename: "hot/hot-update.json"
+    path: path.join(__dirname, 'dist'),
+    filename: '[name].js'
   },
   module: {
-    rules: [
-      {
-        test: /\.scss$/,
-        use: ["css-hot-loader"].concat(
-          ExtractTextPlugin.extract({
-            publicPath: "/Messiaen/dist/",
-            fallback: "style-loader",
-            use: ["css-loader", "resolve-url-loader", "sass-loader?sourceMap"]
-          })
-        )
-      },
-      {
-        test: /\.css$/,
-        use: ["css-hot-loader"].concat(
-          ExtractTextPlugin.extract({
-            publicPath: "/Messiaen/dist/",
-            fallback: "style-loader",
-            use: ["css-loader"]
-          })
-        )
-      },
-      {
-        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: "url-loader?limit=10000&mimetype=application/font-woff"
-      },
-      {
-        test: /\.(ttf|eot|svg|png|jpg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: "file-loader"
-      }
+    rules: [{
+      test: /\.js$/,
+      exclude: /node_modules/,
+      loaders: [],
+    },
+    {
+      test: /\.scss$/,
+      use: ['css-hot-loader'].concat(
+        ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: ['css-loader', 'resolve-url-loader', 'sass-loader?sourceMap']
+        })
+      )
+    },
+    {
+      test: /\.css$/,
+      use: ['css-hot-loader'].concat(
+        ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: ['css-loader']
+        })
+      )
+    },
+    {
+      test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+      loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+    },
+    {
+      test: /\.(ttf|eot|svg|png|jpg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+      loader: 'file-loader'
+    }
     ]
   },
   plugins: [
-    new ExtractTextPlugin("style.css")
+    new ExtractTextPlugin('style.css'),
+    new HtmlWebpackPlugin({
+      title: 'Messiaen\'s Modes of Limited Transposition',
+      template: path.join(__dirname, 'src', 'index.html')
+    })
   ],
   devServer: {
-    contentBase: __dirname,
-    compress: true,
-    port: 9000
+    port: 9000,
+    hot: true,
+    inline: true,
+    watchContentBase: true
   }
 };
