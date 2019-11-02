@@ -168,14 +168,12 @@ function __playUnisonChord() {
   else {
     // Finished
     _playingChord = false;
-    __togglePlayButton();
   }
 }
 
 function __play(chord) {
 
   if (chord && chord.length !== 0) {
-    __togglePlayButton();
 
     var allLoaded = true;
 
@@ -199,15 +197,6 @@ function __play(chord) {
       setTimeout(function () { __play(chord); }, 100);
     }
   }
-  else {
-    __togglePlayButton();
-  }
-}
-
-function __togglePlayButton() {
-    
-  document.getElementById('playMessiaenChordButton').children[0].style.display = _playingChord ? 'none' : 'block';
-  document.getElementById('playMessiaenChordButton').children[1].style.display = _playingChord ? 'block': 'none';
 }
 
 export default messiaenAudio;
