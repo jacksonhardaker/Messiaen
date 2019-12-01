@@ -1,230 +1,230 @@
 // module "browserDetect.js"
 const browserDetect = {
 
-	init: function () {
+  init () {
 
-		this.browser = this.searchString(this.dataBrowser) || "An unknown browser";
+    this.browser = this.searchString(this.dataBrowser) || 'An unknown browser';
 
-		this.version = this.searchVersion(navigator.userAgent)
+    this.version = this.searchVersion(navigator.userAgent)
 
 			|| this.searchVersion(navigator.appVersion)
 
-			|| "an unknown version";
+			|| 'an unknown version';
 
-		this.OS = this.searchString(this.dataOS) || "an unknown OS";
+    this.OS = this.searchString(this.dataOS) || 'an unknown OS';
 
-	},
+  },
 
-	searchString: function (data) {
+  searchString (data) {
 
-		for (var i = 0; i < data.length; i++) {
+    for (var i = 0; i < data.length; i++) {
 
-			var dataString = data[i].string;
+      var dataString = data[i].string;
 
-			var dataProp = data[i].prop;
+      var dataProp = data[i].prop;
 
-			this.versionSearchString = data[i].versionSearch || data[i].identity;
+      this.versionSearchString = data[i].versionSearch || data[i].identity;
 
-			if (dataString) {
+      if (dataString) {
 
-				if (dataString.indexOf(data[i].subString) != -1)
+        if (dataString.indexOf(data[i].subString) != -1)
 
-					return data[i].identity;
+          return data[i].identity;
 
-			}
+      }
 
-			else if (dataProp)
+      else if (dataProp)
 
-				return data[i].identity;
+        return data[i].identity;
 
-		}
+    }
 
-	},
+  },
 
-	searchVersion: function (dataString) {
+  searchVersion (dataString) {
 
-		var index = dataString.indexOf(this.versionSearchString);
+    var index = dataString.indexOf(this.versionSearchString);
 
-		if (index == -1) return;
+    if (index == -1) return;
 
-		return parseFloat(dataString.substring(index + this.versionSearchString.length + 1));
+    return parseFloat(dataString.substring(index + this.versionSearchString.length + 1));
 
-	},
+  },
 
-	dataBrowser: [
+  dataBrowser: [
 
-		{
+    {
 
-			string: navigator.userAgent,
+      string: navigator.userAgent,
 
-			subString: "Chrome",
+      subString: 'Chrome',
 
-			identity: "Chrome"
+      identity: 'Chrome'
 
-		},
+    },
 
-		{
-			string: navigator.userAgent,
+    {
+      string: navigator.userAgent,
 
-			subString: "OmniWeb",
+      subString: 'OmniWeb',
 
-			versionSearch: "OmniWeb/",
+      versionSearch: 'OmniWeb/',
 
-			identity: "OmniWeb"
+      identity: 'OmniWeb'
 
-		},
+    },
 
-		{
+    {
 
-			string: navigator.vendor,
+      string: navigator.vendor,
 
-			subString: "Apple",
+      subString: 'Apple',
 
-			identity: "Safari",
+      identity: 'Safari',
 
-			versionSearch: "Version"
+      versionSearch: 'Version'
 
-		},
+    },
 
-		{
+    {
 
-			prop: window.opera,
+      prop: window.opera,
 
-			identity: "Opera"
+      identity: 'Opera'
 
-		},
+    },
 
-		{
+    {
 
-			string: navigator.vendor,
+      string: navigator.vendor,
 
-			subString: "iCab",
+      subString: 'iCab',
 
-			identity: "iCab"
+      identity: 'iCab'
 
-		},
+    },
 
-		{
+    {
 
-			string: navigator.vendor,
+      string: navigator.vendor,
 
-			subString: "KDE",
+      subString: 'KDE',
 
-			identity: "Konqueror"
+      identity: 'Konqueror'
 
-		},
+    },
 
-		{
+    {
 
-			string: navigator.userAgent,
+      string: navigator.userAgent,
 
-			subString: "Firefox",
+      subString: 'Firefox',
 
-			identity: "Firefox"
+      identity: 'Firefox'
 
-		},
+    },
 
-		{
+    {
 
-			string: navigator.vendor,
+      string: navigator.vendor,
 
-			subString: "Camino",
+      subString: 'Camino',
 
-			identity: "Camino"
+      identity: 'Camino'
 
-		},
+    },
 
-		{		// for newer Netscapes (6+)
+    {		// for newer Netscapes (6+)
 
-			string: navigator.userAgent,
+      string: navigator.userAgent,
 
-			subString: "Netscape",
+      subString: 'Netscape',
 
-			identity: "Netscape"
+      identity: 'Netscape'
 
-		},
+    },
 
-		{
+    {
 
-			string: navigator.userAgent,
+      string: navigator.userAgent,
 
-			subString: "MSIE",
+      subString: 'MSIE',
 
-			identity: "Explorer",
+      identity: 'Explorer',
 
-			versionSearch: "MSIE"
+      versionSearch: 'MSIE'
 
-		},
+    },
 
-		{
+    {
 
-			string: navigator.userAgent,
+      string: navigator.userAgent,
 
-			subString: "Gecko",
+      subString: 'Gecko',
 
-			identity: "Mozilla",
+      identity: 'Mozilla',
 
-			versionSearch: "rv"
+      versionSearch: 'rv'
 
-		},
+    },
 
-		{ 		// for older Netscapes (4-)
+    { 		// for older Netscapes (4-)
 
-			string: navigator.userAgent,
+      string: navigator.userAgent,
 
-			subString: "Mozilla",
+      subString: 'Mozilla',
 
-			identity: "Netscape",
+      identity: 'Netscape',
 
-			versionSearch: "Mozilla"
+      versionSearch: 'Mozilla'
 
-		}
+    }
 
-	],
+  ],
 
-	dataOS: [
+  dataOS: [
 
-		{
+    {
 
-			string: navigator.platform,
+      string: navigator.platform,
 
-			subString: "Win",
+      subString: 'Win',
 
-			identity: "Windows"
+      identity: 'Windows'
 
-		},
+    },
 
-		{
+    {
 
-			string: navigator.platform,
+      string: navigator.platform,
 
-			subString: "Mac",
+      subString: 'Mac',
 
-			identity: "Mac"
+      identity: 'Mac'
 
-		},
+    },
 
-		{
+    {
 
-			string: navigator.userAgent,
+      string: navigator.userAgent,
 
-			subString: "iPhone",
+      subString: 'iPhone',
 
-			identity: "iPhone/iPod"
+      identity: 'iPhone/iPod'
 
-		},
+    },
 
-		{
+    {
 
-			string: navigator.platform,
+      string: navigator.platform,
 
-			subString: "Linux",
+      subString: 'Linux',
 
-			identity: "Linux"
+      identity: 'Linux'
 
-		}
+    }
 
-	]
+  ]
 
 };
 
