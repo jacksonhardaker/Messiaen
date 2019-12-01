@@ -1,4 +1,5 @@
 import React from 'react';
+import { purple, offBlack } from '../../constants/colors';
 const SelectContainer = () => {
   return (
     <section>
@@ -34,6 +35,12 @@ const SelectContainer = () => {
           display: flex;
           flex-wrap: wrap;
           justify-content: center;
+        }
+        select {
+          border-color: ${offBlack};
+        }
+        select:focus {
+          border-color: ${purple}
         }
         div {
           width: 100%;
