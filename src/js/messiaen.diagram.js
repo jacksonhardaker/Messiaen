@@ -8,7 +8,14 @@ messiaen.diagram = function () {
 
   var methods = {};
 
-  var _colors = { background: 'dbcebb', heading: '212136', circle: '1E0F13', defaultText: 'fff', selectedText: '1E0F13', highlightedText: 'AC2017', modeShape: 'fff', chordShape: 'AC2017' };
+  var _colors = {
+    circle: '#212136',
+    defaultText: '#212136',
+    selectedText: '#fff',
+    highlightedText: '#9b4dca',
+    modeShape: '#fff',
+    chordShape: '#9b4dca'
+  };
 
   var _pitchAngleRanges = [{ pitchIndex: 11, lower: -1 / 12, upper: 1 / 12, middle: 0 },
     { pitchIndex: 10, lower: 1 / 12, upper: 3 / 12, middle: 2 / 12 },
@@ -212,7 +219,7 @@ messiaen.diagram = function () {
 
       if (_highlightedPitches.length > 1) {
 
-        _context.strokeStyle = '#' + _colors.modeShape;
+        _context.strokeStyle = _colors.modeShape;
         _context.lineWidth = 4;
         _context.moveTo(_pitchObjects[_highlightedPitches[0]].lineTransformationMatrix[2][0], _pitchObjects[_highlightedPitches[0]].lineTransformationMatrix[2][1]);
 
@@ -232,7 +239,7 @@ messiaen.diagram = function () {
 
       // Circle
       _context.beginPath();
-      _context.strokeStyle = '#' + _colors.circle;
+      _context.strokeStyle = _colors.circle;
       _context.lineWidth = 5;
 
       _context.arc(_center.x, _center.y, radius, 0, Math.PI * 2, false);
@@ -247,7 +254,7 @@ messiaen.diagram = function () {
 
       if (_selectedPitches.length > 1) {
 
-        _context.strokeStyle = '#' + _colors.chordShape;
+        _context.strokeStyle = _colors.chordShape;
         _context.lineWidth = 2;
         _context.moveTo(_pitchObjects[_selectedPitches[0]].lineTransformationMatrix[2][0], _pitchObjects[_selectedPitches[0]].lineTransformationMatrix[2][1]);
 
@@ -271,7 +278,7 @@ messiaen.diagram = function () {
 
     _context.beginPath();
     _context.font = '300 24px Roboto, Arial, Helvetica, sans-serif';
-    _context.fillStyle = '#' + _colors.defaultText;
+    _context.fillStyle = _colors.defaultText;
     _context.textAlign = 'center';
 
     var mode = _modes[_currentModeIndex];
@@ -288,14 +295,14 @@ messiaen.diagram = function () {
 
     messiaenAudio.pitches.forEach((pitch, i) => {
       if (_highlightedPitches.indexOf(i) !== -1) {
-        _context.fillStyle = '#' + _colors.selectedText;
+        _context.fillStyle = _colors.selectedText;
       }
       else {
-        _context.fillStyle = '#' + _colors.defaultText;
+        _context.fillStyle = _colors.defaultText;
       }
 
       if (_selectedPitches.indexOf(i) !== -1) {
-        _context.fillStyle = '#' + _colors.highlightedText;
+        _context.fillStyle = _colors.highlightedText;
       }
 
       var x = Math.round(Math.cos((i + 10) * Math.PI / 6) * radius);

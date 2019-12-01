@@ -14,6 +14,11 @@ const Quote = () => {
           </footer>
         </blockquote>
       </div>
+      <style jsx>{`
+        div.container {
+          padding-bottom: 20px;
+        }
+      `}</style>
     </div>
   );
 };

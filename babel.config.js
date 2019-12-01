@@ -4,6 +4,7 @@ const presets = [
 ];
 
 const plugins = [
+  'styled-jsx/babel'
 ];
 
 module.exports = { presets, plugins };
