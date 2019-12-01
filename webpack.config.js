@@ -8,7 +8,7 @@ module.exports = {
   entry: './index.js',
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: '[name].js'
+    filename: '[name].[hash].js'
   },
   module: {
     rules: [
@@ -66,7 +66,9 @@ module.exports = {
     ]
   },
   plugins: [
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({
+      filename: '[name].[hash].css'
+    }),
     new HtmlWebpackPlugin({
       title: 'Messiaen\'s Modes of Limited Transposition',
       template: path.join(__dirname, 'src', 'index.html')
