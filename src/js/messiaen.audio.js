@@ -1,8 +1,8 @@
+import tones from '../App/constants/tones';
+
 // Messiaen Audio
 
-const messiaenAudio = {
-  pitches: ['C#/Db', 'D', 'D#/Eb', 'E', 'F', 'F#/Gb', 'G', 'G#/Ab', 'A', 'Bb', 'B', 'C']
-};
+const messiaenAudio = {};
 
 const _folders = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
 const _maxChannels = 100;
@@ -19,9 +19,9 @@ messiaenAudio.initialise = function () {
     for (var k = 0; k < 12; k++) {
 
       _keyboard.push({
-        pitch: messiaenAudio.pitches[k],
+        pitch: tones[k],
         audio: `audio/mp3/${_folders[k]}/${j + 1}.mp3`,
-        id: `${messiaenAudio.pitches[k]}${j + 1}`,
+        id: `${tones[k]}${j + 1}`,
         loaded: false
       });
     }
@@ -52,7 +52,7 @@ messiaenAudio.preLoadPitch = function (pitch) {
 
 messiaenAudio.buildAndPlayChord = function (selectedPitches) {
 
-  let pitchArray = selectedPitches.map(pitch => messiaenAudio.pitches[pitch]);
+  let pitchArray = selectedPitches.map(pitch => tones[pitch]);
 
   if (pitchArray.length > 0 && !_playingChord) {
 

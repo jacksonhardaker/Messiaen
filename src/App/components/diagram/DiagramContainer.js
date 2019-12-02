@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import SelectContainer from './SelectContainer';
+import ControlsContainer from './ControlsContainer';
+import { initialise } from '../../../js/messiaen.diagram';
 
 const DiagramContainer = () => {
+
+  useEffect(initialise, []);
+
   return (
     <section className='messiaenbackground'>
       
@@ -11,15 +16,7 @@ const DiagramContainer = () => {
         <canvas id='messiaenDiagram' width='300' height='300'></canvas>
       </div>
 
-      <section className='controls'>
-        <div>
-          <button className='button-outline' id='playMessiaenChordButton'>Play chord</button>
-          <button className='button-outline' id='clearMessiaenChordButton'>Clear chord</button>
-        </div>
-        <div>
-          <button className='button-outline' id='downloadMessiaenDiagramButton'>Download Diagram</button>
-        </div>
-      </section>
+      <ControlsContainer />
 
       <style jsx>{`
         section.messiaenbackground {
@@ -32,14 +29,6 @@ const DiagramContainer = () => {
           -o-user-select: none;
           user-select: none;
           max-width: 100%;
-        }
-        section.controls {
-          margin: 0 auto;
-          display: inline-flex;
-          flex-direction: column;
-        }
-        section.controls button {
-          margin: 5px;
         }
       `}</style>
     </section>
