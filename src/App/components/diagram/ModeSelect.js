@@ -1,21 +1,37 @@
 import React from 'react';
-import { getModeNames } from '../../constants/modes';
+import modes, { getModeNames } from '../../constants/modes';
 import { offBlack, purple } from '../../constants/colors';
+import useMessiaenContext from '../../hooks/useMessiaenContext';
 
 const ModeOption = ({ label, index }) => {
   return <option value={index}>{label}</option>;
 };
 
-const ModeOptions = ({modes}) => {
+const ModeOptions = ({ modes }) => {
   return modes.map((label, index) => <ModeOption label={label} index={index} key={index} />);
 };
 
 const ModeSelect = () => {
-  const modes = getModeNames();
+  const {
+    selectedMode,
+    setSelectedMode,
+  } = useMessiaenContext();
+  const modeNames = getModeNames();
+
+  const onChange = event => {
+    const index = event.currentTarget.selectedIndex;
+
+    setSelectedMode(
+      modes[index]
+    );
+  };
 
   return (
-    <select id='modeSelect'>
-      <ModeOptions modes={modes} />
+    <select
+      id='modeSelect'
+      {...{ onChange }}
+      defaultValue={modeNames.indexOf(selectedMode.name)}>
+      <ModeOptions modes={modeNames} />
 
       <style jsx>{`
         select {

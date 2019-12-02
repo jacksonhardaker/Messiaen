@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { purple, offBlack } from '../../constants/colors';
 import tones from '../../constants/tones';
+import useMessiaenContext from '../../hooks/useMessiaenContext';
 
 const KeyOption = ({ tone, value }) => {
   return <option value={value}>{tone}</option>;
@@ -11,12 +12,33 @@ const KeyOptions = ({ tones }) => {
 };
 
 const KeySelect = () => {
+
   // Map options and push 'C' to the front of the array.
   const options = tones.map((tone, index) => ({ value: index, label: tone }));
   options.unshift(options.pop());
 
+  const selectEl = useRef(null);
+  
+  const {
+    selectedTone,
+    setSelectedTone,
+  } = useMessiaenContext();
+
+  const onChange = ({ currentTarget }) => {
+    setSelectedTone(
+      tones[currentTarget.value]
+    );
+  };
+
+  useEffect(() => {
+    selectEl.current.selectedIndex = options.findIndex(option => option.label === selectedTone);
+  }, [selectedTone, options]);
+
   return (
-    <select id='keySelect' defaultValue={4}>
+    <select
+      ref={selectEl}
+      id='keySelect'
+      {...{ onChange }}>
       <KeyOptions tones={options} />
 
       <style jsx>{`

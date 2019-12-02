@@ -16,4 +16,5 @@ export {
   getModeByIndex,
   getModeNames,
 };
+
 export default modes;

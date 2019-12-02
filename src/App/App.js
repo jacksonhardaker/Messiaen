@@ -4,11 +4,12 @@ import SiteHeader from './components/SiteHeader';
 import SiteFooter from './components/SiteFooter';
 import Quote from './components/Quote';
 import DiagramContainer from './components/diagram/DiagramContainer';
+import MessiaenProvider from './context/MessiaenContext';
 // import Instructions from './components/Instructions';
 
 const App = ({ title }) => {
   return (
-    <>
+    <MessiaenProvider>
       <SiteHeader {...{ title }}/>
       <main>
         <Quote />
@@ -16,7 +17,7 @@ const App = ({ title }) => {
         <DiagramContainer />
       </main>
       <SiteFooter />
-    </>
+    </MessiaenProvider>
   );
 };
 
