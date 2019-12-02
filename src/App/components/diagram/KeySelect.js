@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { purple, offBlack } from '../../constants/colors';
-import tones from '../../constants/tones';
+import tones, { mapTonesToLeadingC } from '../../constants/tones';
 import useMessiaenContext from '../../hooks/useMessiaenContext';
 
 const KeyOption = ({ tone, value }) => {
@@ -11,14 +11,8 @@ const KeyOptions = ({ tones }) => {
   return tones.map(({ value, label }) => <KeyOption tone={label} value={value} key={value} />);
 };
 
-const KeySelect = () => {
-
-  // Map options and push 'C' to the front of the array.
-  const options = tones.map((tone, index) => ({ value: index, label: tone }));
-  options.unshift(options.pop());
-
+const KeySelect = ({ options = mapTonesToLeadingC() }) => {
   const selectEl = useRef(null);
-  
   const {
     selectedTone,
     setSelectedTone,
