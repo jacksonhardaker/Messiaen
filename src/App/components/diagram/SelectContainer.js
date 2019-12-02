@@ -1,5 +1,4 @@
 import React from 'react';
-import { purple, offBlack } from '../../constants/colors';
 import ModeSelect from './ModeSelect';
 import KeySelect from './KeySelect';
 
