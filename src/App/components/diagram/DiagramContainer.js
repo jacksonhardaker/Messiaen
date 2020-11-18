@@ -17,7 +17,7 @@ const DiagramContainer = () => {
           <button className='button-outline' id='clearMessiaenChordButton'>Clear chord</button>
         </div>
         <div>
-          <button className='button-outline' id='downloadMessiaenDiagramButton'>Download Diagram</button>
+          <a className='button button-outline' id='downloadMessiaenDiagramButton'>Download Diagram</a>
         </div>
       </section>
 
